@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>MediRoot</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Inter:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--dg:#173B2D;--g:#5F8F67;--lg:#E6F0E3;--bg:#FFFFFF;--w:#fff;--mu:#718078;--tx:#173B2D;--bd:#d9e2d5;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1f18;--w:#16291f;--lg:#1d3528;--tx:#eaf1e6;--mu:#9bb0a3;--bd:#2a4437}}
+:root[data-theme=dark]{--bg:#0f1f18;--w:#16291f;--lg:#1d3528;--tx:#eaf1e6;--mu:#9bb0a3;--bd:#2a4437}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:400 16px/1.6 Inter,"Noto Sans Devanagari",system-ui,sans-serif}
+h1,h2,h3{font-family:Fraunces,Georgia,"Noto Sans Devanagari",serif;font-weight:500;line-height:1.2;margin:.2em 0 .4em}
+button,input,select{font:inherit;color:inherit}
+.btn{background:var(--dg);color:#fff;border:0;padding:.7em 1.2em;border-radius:10px;cursor:pointer;transition:transform .15s,box-shadow .2s}
+.btn:hover{box-shadow:0 0 0 4px rgba(95,143,103,.3)}.btn:active{transform:scale(.97)}
+.btn.o{background:transparent;color:var(--tx);border:1px solid var(--bd)}
+.btn:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--g);outline-offset:2px}
+input,select{width:100%;padding:.7em .9em;border:1px solid var(--bd);border-radius:10px;background:var(--w);margin:.25em 0 .8em}
+label{font-size:.85rem;color:var(--mu)}
+.wrap{max-width:980px;margin:0 auto;padding:1rem 1.2rem 6rem}
+#auth{min-height:100vh;display:grid;place-items:center;padding:1rem;position:relative;overflow:hidden;background:radial-gradient(circle at 20% 20%,#5F8F67 0,transparent 45%),radial-gradient(circle at 85% 80%,#2b5a41 0,transparent 50%),#173B2D;color:#fff}
+#auth svg.bg{position:absolute;inset:-5%;width:110%;height:110%;opacity:.28;animation:drift 30s ease-in-out infinite alternate}
+@keyframes drift{to{transform:scale(1.06) translate(-1.5%,1%)}}
+.leaf{position:absolute;width:14px;height:14px;background:#a9cfa4;border-radius:0 100% 0 100%;opacity:.5;animation:fl 14s linear infinite}
+@keyframes fl{from{transform:translateY(105vh) rotate(0)}to{transform:translateY(-10vh) rotate(300deg)}}
+.glass{position:relative;width:min(400px,100%);background:rgba(255,255,255,.14);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.3);border-radius:18px;padding:1.6rem;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.glass label{color:#dbe8d8}.glass input,.glass select{background:rgba(255,255,255,.92);color:#173B2D}
+.glass a{color:#cfe6c9;cursor:pointer;font-size:.9rem}
+nav.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:1rem;padding:.6rem 1.2rem}
+.logo{font:600 1.3rem Fraunces,"Noto Sans Devanagari",serif;display:flex;align-items:center;gap:.4rem;cursor:pointer}
+nav.top .links{display:flex;gap:.2rem;flex:1;overflow-x:auto}
+.links a,.bn a{padding:.4em .7em;border-radius:8px;cursor:pointer;color:var(--mu);white-space:nowrap}
+.links a.on,.bn a.on{background:var(--lg);color:var(--tx)}
+.bn{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--w);border-top:1px solid var(--bd);justify-content:space-around;padding:.4rem .2rem calc(.4rem + env(safe-area-inset-bottom,0px));z-index:5}
+.bn a{font-size:.75rem;text-align:center}
+@media(max-width:760px){nav.top .links{display:none}.bn{display:flex}}
+.sos{border:1px solid #b5524a;color:#b5524a;background:none;border-radius:8px;padding:.3em .7em;cursor:pointer;font-size:.85rem}
+.hero{position:relative;height:300px;border-radius:18px;overflow:hidden;background:#173B2D;color:#fff;margin:1rem 0 1.5rem}
+.sl{position:absolute;inset:0;padding:2rem;display:flex;flex-direction:column;justify-content:flex-end;opacity:0;transition:opacity 1s}
+.sl.on{opacity:1}.sl .bgx{position:absolute;inset:0;transform:scale(1);transition:transform 6s linear}.sl.on .bgx{transform:scale(1.1)}
+.sl>*:not(.bgx){position:relative;max-width:520px}.sl h2{font-size:2rem}.sl p{margin:0;color:#e6f0e3}
+.prog{position:absolute;bottom:0;left:0;height:3px;background:#cfe6c9;width:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:.8rem}
+.act{background:var(--w);border:1px solid var(--bd);border-radius:14px;padding:1rem;cursor:pointer;text-align:left;transition:border-color .2s}
+.act:hover{border-color:var(--g)}.act b{font-family:Fraunces,"Noto Sans Devanagari",serif;font-size:1.1rem;font-weight:500}.act span{display:block;color:var(--mu);font-size:.9rem}
+.back{background:none;border:0;color:var(--mu);cursor:pointer;padding:.3em 0;margin-bottom:.5rem}
+.box{background:var(--w);border:1px solid var(--bd);border-radius:14px;padding:1rem 1.2rem;margin:.8rem 0}
+.warn{background:#fbeee9;border-color:#e2b5aa;color:#6b2a20}
+:root[data-theme=dark] .warn{background:#3a1f1a;color:#f2c9bf}
+.tag{display:inline-block;background:var(--lg);border-radius:20px;padding:.1em .7em;font-size:.8rem;margin-right:.3rem}
+.chat{display:flex;flex-direction:column;gap:.6rem;min-height:300px;max-height:55vh;overflow:auto;padding:.5rem 0}
+.m{max-width:80%;padding:.6em .9em;border-radius:14px;animation:pop .25s}.m.u{align-self:flex-end;background:var(--dg);color:#fff}.m.a{background:var(--w);border:1px solid var(--bd)}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem;margin:.4rem 0}.chips button{border:1px solid var(--g);background:none;border-radius:20px;padding:.3em .8em;cursor:pointer}
+.pm{position:relative}.pm summary{list-style:none;cursor:pointer;width:34px;height:34px;border-radius:50%;background:var(--dg);color:#fff;display:grid;place-items:center;font-weight:600}.pm summary::-webkit-details-marker{display:none}
+.pm div{position:absolute;right:0;top:42px;background:var(--w);border:1px solid var(--bd);border-radius:12px;padding:.8rem;min-width:220px;box-shadow:0 10px 30px rgba(0,0,0,.15);z-index:9}.pm button{width:100%;text-align:left;margin-top:.4rem}
+.lg{display:flex;border:1px solid var(--bd);border-radius:20px;overflow:hidden}.lg button{border:0;background:none;padding:.25em .7em;cursor:pointer;color:var(--mu)}.lg button.on{background:var(--dg);color:#fff}
+#auth:before{content:"";position:absolute;inset:-50%;background:conic-gradient(from 0deg,#173B2D,#2f6b4a,#173B2D,#4f8a5f,#173B2D);animation:spin 40s linear infinite;opacity:.55}@keyframes spin{to{transform:rotate(360deg)}}
+.orb{position:absolute;border-radius:50%;filter:blur(40px);opacity:.45;animation:orb 14s ease-in-out infinite alternate}@keyframes orb{to{transform:translate(60px,-40px) scale(1.25)}}
+.vine path{stroke-dasharray:1200;stroke-dashoffset:1200;animation:grow 7s ease-out forwards}@keyframes grow{to{stroke-dashoffset:0}}
+.pill{position:absolute;width:44px;height:18px;border-radius:9px;background:linear-gradient(90deg,#e6f0e3 50%,#9bc79a 50%);opacity:.45;animation:fl 18s linear infinite}
+.glass{animation:rise 1s cubic-bezier(.2,.8,.2,1) both}@keyframes rise{from{opacity:0;transform:translateY(30px) scale(.96)}}
+.glass>*{animation:inn .6s both}@keyframes inn{from{opacity:0;transform:translateY(12px)}}
+.glass>:nth-child(2){animation-delay:.12s}.glass>:nth-child(3){animation-delay:.2s}.glass>:nth-child(4){animation-delay:.28s}.glass>:nth-child(5){animation-delay:.36s}.glass>:nth-child(6){animation-delay:.44s}.glass>:nth-child(7){animation-delay:.52s}.glass>:nth-child(8){animation-delay:.6s}
+.shim{background:linear-gradient(90deg,#fff,#a9cfa4,#fff);background-size:200%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:sh 4s linear infinite}@keyframes sh{to{background-position:-200% 0}}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--g);border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;vertical-align:middle}
+.hrow{position:relative;overflow:hidden}.hc{position:absolute;top:0;left:0;width:33.333%;height:100%;transition:transform 1.1s cubic-bezier(.65,0,.35,1),opacity 1.1s;opacity:.75;border-right:3px solid rgba(255,255,255,.12);overflow:hidden}.hc.mid{opacity:1}.hc.nt{transition:none!important;opacity:0}
+.g0{background:linear-gradient(160deg,#3a7a55,#173B2D)}.g1{background:linear-gradient(160deg,#8a6a2a,#2f4a2f)}.g2{background:linear-gradient(160deg,#4a8a66,#173B2D)}
+.art{position:absolute;inset:0}.art svg{width:100%;height:100%}.bgrow{position:absolute;inset:0;opacity:.4}
+.ht{position:absolute;left:0;right:0;bottom:0;padding:1.2rem .9rem .9rem;background:linear-gradient(transparent,rgba(10,30,20,.8))}.ht h2{font-size:clamp(1rem,2.3vw,1.5rem);margin:0}.ht p{font-size:.85rem;margin:.2rem 0 0;color:#e6f0e3;line-height:1.4}
+.sw{transform-box:fill-box;transform-origin:0 50%;animation:sw 5s ease-in-out infinite alternate}@keyframes sw{from{transform:rotate(-6deg)}to{transform:rotate(7deg)}}
+.sg{animation:sg 4.5s ease-in-out infinite alternate}@keyframes sg{from{transform:rotate(-2.5deg)}to{transform:rotate(2.5deg)}}
+.kb{animation:kb 12s ease-in-out infinite alternate}@keyframes kb{to{transform:scale(1.08) translate(-4px,-6px)}}
+.fl{animation:fl2 5s ease-in-out infinite alternate}@keyframes fl2{from{transform:translateY(-12px)}to{transform:translateY(14px)}}
+.gr{stroke-dasharray:40;animation:gr 3s ease-in-out infinite alternate}@keyframes gr{from{stroke-dashoffset:40}to{stroke-dashoffset:0}}
+.pu{transform-box:fill-box;transform-origin:center;animation:pu 2.2s ease-in-out infinite}@keyframes pu{50%{transform:scale(1.15)}}
+.hp{position:absolute;width:10px;height:10px;background:#cfe6c9;border-radius:0 100% 0 100%;opacity:.6;animation:hf 9s linear infinite;z-index:2}@keyframes hf{from{transform:translateY(320px) rotate(0)}to{transform:translateY(-30px) rotate(280deg)}}
+.ic{width:30px;height:30px;color:var(--g);display:block;margin-bottom:.3rem}.scl{animation:scl 2s ease-in-out infinite alternate}@keyframes scl{from{transform:translateY(-6px)}to{transform:translateY(6px)}}
+.swy{transform-origin:50% 100%;animation:swy 3s ease-in-out infinite alternate}@keyframes swy{to{transform:rotate(9deg)}}
+.dt{animation:dt 1.2s ease-in-out infinite}@keyframes dt{50%{transform:translateY(-3px)}}
+.wrap{animation:inn .5s both}
+#splash{position:fixed;inset:0;background:#173B2D;display:grid;place-items:center;color:#fff;z-index:99;transition:opacity .6s}.sp2{width:54px;height:54px;margin:0 auto;border:4px solid rgba(255,255,255,.25);border-top-color:#a9cfa4;border-radius:50%;animation:spin 1s linear infinite}
+.toast{position:fixed;right:12px;top:calc(64px + env(safe-area-inset-top,0px));background:var(--w);border:1px solid var(--g);border-left:5px solid var(--g);border-radius:12px;padding:.8rem 1rem;z-index:50;max-width:320px;box-shadow:0 12px 30px rgba(0,0,0,.2);animation:rise .5s both}
+.pm summary{position:relative}.bdg{position:absolute;top:-5px;right:-5px;background:#c0463b;color:#fff;border-radius:10px;font-size:.65rem;padding:0 5px;line-height:1.4}.rg svg{animation:ring 1.2s ease-in-out infinite;transform-origin:50% 0}@keyframes ring{25%{transform:rotate(14deg)}75%{transform:rotate(-14deg)}}
+.sec{margin:1.6rem 0 .6rem;display:flex;align-items:center;gap:.5rem}.sec:after{content:"";height:2px;flex:1;background:linear-gradient(90deg,var(--g),transparent)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.8rem}.stp{background:var(--w);border:1px solid var(--bd);border-radius:14px;padding:1rem}.stp span{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--dg);color:#fff;animation:pu 2.2s ease-in-out infinite}.stp p{margin:.2rem 0 0;color:var(--mu);font-size:.9rem}
+.ft{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--bd);color:var(--mu);font-size:.85rem;text-align:center}
+.callbox{text-align:center;padding:1rem}.ring{position:relative;width:110px;height:110px;margin:1rem auto}.ring i{position:absolute;inset:0;border-radius:50%;border:2px solid var(--g);animation:rp 2s ease-out infinite}.ring i+i{animation-delay:1s}@keyframes rp{from{transform:scale(1);opacity:.8}to{transform:scale(1.9);opacity:0}}.av{position:absolute;inset:0;border-radius:50%;background:var(--dg);color:#fff;display:grid;place-items:center;font:600 2.2rem Fraunces,serif}
+.box,.act,.stp{box-shadow:0 1px 4px rgba(23,59,45,.08)}
+.chips button.on{background:var(--lg)}
+.cam{position:relative;border-radius:16px;overflow:hidden;background:#000;aspect-ratio:4/3;max-height:60vh}
+.cam video{width:100%;height:100%;object-fit:cover}.frame{position:absolute;inset:14%;border:0}
+.frame i{position:absolute;width:28px;height:28px;border:3px solid #cfe6c9}
+.frame i:nth-child(1){top:0;left:0;border-right:0;border-bottom:0}.frame i:nth-child(2){top:0;right:0;border-left:0;border-bottom:0}.frame i:nth-child(3){bottom:0;left:0;border-right:0;border-top:0}.frame i:nth-child(4){bottom:0;right:0;border-left:0;border-top:0}
+.scan{position:absolute;left:0;right:0;height:2px;background:#cfe6c9;animation:sc 2.6s ease-in-out infinite alternate}@keyframes sc{from{top:0}to{top:100%}}
+.row{display:flex;gap:.6rem;flex-wrap:wrap}.row>input{flex:1;min-width:180px}
+ul{padding-left:1.2rem;margin:.3rem 0}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<div id="app"></div>
+<script>
+const $=s=>document.querySelector(s);
+const T={en:{home:"Home",scan:"Scan",meds:"Medicines",herb:"Herbal",rx:"Prescription",ask:"Ask MediRoot",docs:"Doctors",help:"How can MediRoot help you today?",tag:"Understand your medicine. Understand your care.",back:"← Back"},
+hi:{home:"होम",scan:"स्कैन",meds:"दवाइयाँ",herb:"जड़ी-बूटी",rx:"पर्चा",ask:"MediRoot से पूछें",docs:"डॉक्टर",help:"MediRoot आज आपकी कैसे मदद कर सकता है?",tag:"अपनी दवा समझें। अपनी देखभाल समझें।",back:"← वापस"},
+mr:{home:"मुख्यपृष्ठ",scan:"स्कॅन",meds:"औषधे",herb:"वनौषधी",rx:"प्रिस्क्रिप्शन",ask:"MediRoot ला विचारा",docs:"डॉक्टर",help:"MediRoot आज तुम्हाला कशी मदत करू शकते?",tag:"तुमचे औषध समजून घ्या. तुमची काळजी समजून घ्या.",back:"← मागे"}};
+let L="en",user=null,route="home",stack=[],ctx={med:null,sym:[],stage:null,rx:null},msgs=[],stream=null,hi=0,timer=null;
+const t=k=>T[L][k]||T.en[k];
+const M=[
+{id:"paracetamol",n:"Paracetamol",ai:"Paracetamol (acetaminophen)",f:"Tablet 500 mg, syrup, injection",s:"A common medicine for pain and fever.",u:"Mild to moderate pain (headache, body ache, toothache) and fever.",w:"It lowers fever and eases pain, mainly through effects in the brain. It does not reduce inflammation much.",se:"Usually well tolerated. Rarely rash or liver problems, mostly with overdose.",p:"Do not exceed the daily limit on the label or your doctor's advice. Check other cold/flu products for hidden paracetamol. Take extra care with liver disease or regular alcohol use.",fd:"Can be taken with or without food. Avoid alcohol.",i:"Other paracetamol-containing products (double dosing); some blood thinners with long-term use.",r:"Rash, swelling of face, yellow skin/eyes, fever beyond 3 days, or any suspected overdose — seek care immediately.",a:["ibuprofen"]},
+{id:"dolo650",n:"Dolo 650",ai:"Paracetamol 650 mg",f:"Tablet",s:"A brand of paracetamol, 650 mg per tablet.",u:"Fever and mild to moderate pain.",w:"Same as paracetamol: lowers fever and eases pain.",se:"Usually well tolerated; rare rash or liver effects with overuse.",p:"The strength is higher than 500 mg tablets, so confirm the dose with your doctor or pharmacist. Do not combine with other paracetamol products.",fd:"With or without food. Avoid alcohol.",i:"Other paracetamol-containing products.",r:"Rash, yellow skin/eyes, fever lasting over 3 days, or accidental overdose.",a:["paracetamol"]},
+{id:"ibuprofen",n:"Ibuprofen",ai:"Ibuprofen",f:"Tablet 200/400 mg, suspension",s:"An anti-inflammatory pain reliever (an NSAID).",u:"Pain, inflammation, menstrual cramps, fever.",w:"Blocks chemicals that cause pain, swelling and fever.",se:"Stomach upset, heartburn; less commonly stomach bleeding or kidney strain.",p:"Take after food. Avoid with stomach ulcers, kidney disease, or in late pregnancy unless a doctor says otherwise. Use caution in asthma.",fd:"Take with food or milk.",i:"Aspirin, other NSAIDs, blood thinners, some blood pressure medicines.",r:"Black stools, vomiting blood, severe stomach pain, wheezing, swelling.",a:["paracetamol"]},
+{id:"cetirizine",n:"Cetirizine",ai:"Cetirizine hydrochloride",f:"Tablet 10 mg, syrup",s:"An antihistamine for allergy symptoms.",u:"Sneezing, runny nose, itchy eyes, hives.",w:"Blocks histamine, which your body releases during allergic reactions.",se:"Sleepiness, dry mouth, tiredness.",p:"May cause drowsiness: be careful when driving. Dose changes are needed in kidney problems.",fd:"With or without food. Avoid alcohol.",i:"Other sedating medicines, alcohol.",r:"Swelling of lips or throat, difficulty breathing, or a widespread severe rash.",a:[]},
+{id:"azithromycin",n:"Azithromycin",ai:"Azithromycin",f:"Tablet 250/500 mg, suspension",s:"An antibiotic. It treats bacterial infections, not viral ones like most colds.",u:"Certain chest, throat, ear and skin infections, as decided by a doctor.",w:"Stops bacteria from making proteins they need to grow.",se:"Nausea, loose stools, stomach pain.",p:"Take only when prescribed and finish the course as told. Not helpful for viral illness. Tell your doctor about heart rhythm problems.",fd:"Check the label: some forms are taken on an empty stomach.",i:"Some heart-rhythm medicines, antacids (timing), blood thinners.",r:"Severe diarrhoea, rash, swelling, fainting or palpitations.",a:["amoxicillin"]},
+{id:"amoxicillin",n:"Amoxicillin",ai:"Amoxicillin",f:"Capsule, tablet, suspension",s:"A penicillin-type antibiotic.",u:"Bacterial infections of ear, throat, chest, urinary tract, as prescribed.",w:"Damages the wall of bacteria so they cannot survive.",se:"Diarrhoea, nausea, rash.",p:"Do not use with a penicillin allergy. Complete the course as prescribed. Not for viral infections.",fd:"With or without food.",i:"Some blood thinners, methotrexate.",r:"Hives, facial swelling, breathing trouble, severe diarrhoea.",a:["azithromycin"]},
+{id:"pantoprazole",n:"Pantoprazole",ai:"Pantoprazole",f:"Tablet 20/40 mg",s:"Reduces stomach acid.",u:"Acidity, heartburn, acid reflux, stomach ulcers.",w:"Switches off the acid pumps in the stomach lining.",se:"Headache, loose stools, gas.",p:"Long-term use should be supervised by a doctor.",fd:"Usually taken 30–60 minutes before a meal.",i:"Some HIV medicines, methotrexate.",r:"Black stools, trouble swallowing, ongoing vomiting, unexplained weight loss.",a:["omeprazole"]},
+{id:"omeprazole",n:"Omeprazole",ai:"Omeprazole",f:"Capsule 20 mg",s:"Reduces stomach acid, like pantoprazole.",u:"Acidity, reflux, ulcers.",w:"Switches off the acid pumps in the stomach lining.",se:"Headache, nausea, loose stools.",p:"Long-term use should be supervised by a doctor.",fd:"Before a meal, usually breakfast.",i:"Clopidogrel, some antifungals.",r:"Black stools, trouble swallowing, persistent vomiting.",a:["pantoprazole"]},
+{id:"metformin",n:"Metformin",ai:"Metformin hydrochloride",f:"Tablet 500/850/1000 mg",s:"A medicine that helps control blood sugar in type 2 diabetes.",u:"Type 2 diabetes, prescribed by a doctor.",w:"Reduces sugar made by the liver and helps the body use insulin better.",se:"Nausea, loose stools, metallic taste, usually settling over time.",p:"Needs kidney checks. Do not stop or change the dose without your doctor.",fd:"Take with meals to reduce stomach upset.",i:"Alcohol, contrast dye used in scans, some diuretics.",r:"Fast breathing, severe weakness, muscle pain, or ongoing vomiting.",a:[]},
+{id:"ors",n:"ORS",ai:"Oral rehydration salts (glucose, sodium, potassium)",f:"Sachet / powder",s:"A salt-and-sugar mix that replaces fluids lost in diarrhoea or vomiting.",u:"Dehydration from diarrhoea, vomiting or heat.",w:"Sugar helps the gut absorb water and salts.",se:"Rarely vomiting if taken too fast.",p:"Mix exactly as the pack says, using clean water. Do not add extra sugar or salt.",fd:"Sip slowly.",i:"None commonly.",r:"Not able to drink, very sleepy, no urine for many hours, blood in stools, especially in children and elders.",a:[]},
+{id:"aspirin",n:"Aspirin",ai:"Acetylsalicylic acid",f:"Tablet 75/150/325 mg",s:"Eases pain and, at low dose, helps prevent blood clots.",u:"Pain, fever, and heart/stroke prevention when a doctor advises.",w:"Blocks chemicals involved in pain and in platelets sticking together.",se:"Stomach upset, easy bruising.",p:"Not for children with viral fever. Raises bleeding risk. Do not start for the heart without medical advice.",fd:"Take after food.",i:"Ibuprofen, blood thinners, alcohol.",r:"Black stools, vomiting blood, severe stomach pain, allergic reaction.",a:["ibuprofen"]}];
+const H=[
+{n:"Tulsi",sci:"Ocimum tenuiflorum",part:"Leaves",tr:"Used in Ayurveda for cough, cold and as a herbal tea.",ev:"Small studies suggest possible effects on stress and blood sugar; evidence is limited.",sf:"May lower blood sugar and affect clotting; ask a doctor if on diabetes or blood thinners."},
+{n:"Ashwagandha",sci:"Withania somnifera",part:"Root",tr:"Traditionally used as a general tonic for stress and strength.",ev:"Some trials show reduced stress scores; long-term safety is not well established.",sf:"Avoid in pregnancy. Can interact with thyroid, sedative and immune-suppressing medicines. Rare liver injury reported."},
+{n:"Ginger",sci:"Zingiber officinale",part:"Rhizome (root-like stem)",tr:"Used for nausea, cold and digestion.",ev:"Reasonably good evidence for relieving nausea, including in pregnancy at modest amounts.",sf:"Large amounts may thin blood or cause heartburn."},
+{n:"Turmeric",sci:"Curcuma longa",part:"Rhizome",tr:"Used in food and for wounds and inflammation.",ev:"Curcumin shows effects in lab studies; benefits in people are not firmly proven and absorption is poor.",sf:"High-dose supplements may affect the liver and blood thinners. Cooking amounts are generally safe."},
+{n:"Neem",sci:"Azadirachta indica",part:"Leaves, bark",tr:"Used for skin problems and oral care.",ev:"Evidence in people is limited.",sf:"Neem oil is toxic if swallowed, especially for children. Avoid in pregnancy."},
+{n:"Aloe vera",sci:"Aloe barbadensis miller",part:"Leaf gel",tr:"Used on burns and skin.",ev:"Gel on skin may help mild burns; the latex taken by mouth is a strong laxative.",sf:"Do not take latex orally in pregnancy or kidney disease."}];
+const D=[
+{n:"Dr. Anita Kulkarni",sp:"General Physician",ex:"12 yrs",loc:"Kolhapur",ty:"Online",av:"Today"},
+{n:"Dr. Rahul Patil",sp:"Pulmonologist",ex:"9 yrs",loc:"Pune",ty:"In-person",av:"Tomorrow"},
+{n:"Dr. Sneha Joshi",sp:"Dermatologist",ex:"7 yrs",loc:"Kolhapur",ty:"Online",av:"Today"},
+{n:"Dr. Imran Shaikh",sp:"General Physician",ex:"15 yrs",loc:"Mumbai",ty:"Both",av:"This week"}];
+const leaves=()=>Array.from({length:12},(_,i)=>`<i class="leaf" style="left:${i*8.5}%;animation-delay:-${i*1.3}s;animation-duration:${12+i%5*3}s"></i>`).join("");
+const botanic=`<svg class="bg" viewBox="0 0 800 600"><g fill="none" stroke="#cfe6c9" stroke-width="2"><path d="M80 560c40-160 20-300 140-420"/><path d="M220 140c60 10 90 50 80 100-60 0-90-40-80-100z"/><path d="M130 330c-60-20-90-60-80-110 60 10 90 50 80 110z"/><path d="M650 580c-30-120 10-240-60-360"/><path d="M590 220c50-10 90 20 90 70-50 10-90-20-90-70z"/><rect x="420" y="380" width="70" height="120" rx="14"/><rect x="430" y="355" width="50" height="25" rx="6"/><ellipse cx="560" cy="520" rx="30" ry="14"/><path d="M300 520c20-60 60-70 90-40"/></g></svg>`;
+const logo=`<svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke="#5F8F67" stroke-width="2.2" stroke-linecap="round"><path d="M16 3c8 4 10 12 0 18C6 15 8 7 16 3z"/><path d="M16 21v9M16 25l-5 3M16 25l5 3M16 11v6M13 14h6" stroke="#173B2D"/></svg>`;
+function go(r,push=true){if(push&&r!==route)stack.push(route);route=r;render();scrollTo(0,0)}
+function back(){route=stack.pop()||"home";render()}
+function stopCam(){if(stream){stream.getTracks().forEach(x=>x.stop());stream=null}}
+function auth(mode="login"){
+ $("#app").innerHTML=`<div id="auth">${deco()}<div class="glass"><div class="logo shim">${logo} MediRoot</div><p style="margin:.2rem 0 .6rem;color:#dbe8d8">${T[L].tag}</p><select onchange="L=this.value;auth('${mode}')" aria-label="Language">${[["en","English"],["hi","हिन्दी"],["mr","मराठी"]].map(a=>`<option value="${a[0]}" ${a[0]==L?"selected":""}>${a[1]}</option>`).join("")}</select>
+ ${mode=="login"?`<label>Username</label><input id="u" autocomplete="username"><label>Password</label><input id="p" type="password" autocomplete="current-password"><div class="row" style="justify-content:space-between;font-size:.85rem"><label><input type="checkbox" style="width:auto;margin:0 .3rem 0 0">Remember me</label><a onclick="auth('forgot')">Forgot password?</a></div><p id="er" style="color:#ffd2c9;margin:.3rem 0"></p><button class="btn" style="width:100%;background:#5F8F67" onclick="login()">Login</button><button class="btn o" style="width:100%;margin-top:.5rem;color:#fff;border-color:rgba(255,255,255,.5)" onclick="demo()">Continue with demo account</button><p>New to MediRoot? <a onclick="auth('reg')">Create an account</a></p>`
+ :mode=="reg"?`<label>Full name</label><input id="fn"><label>Phone number</label><input id="ph" inputmode="tel"><label>Email</label><input id="em" type="email" autocomplete="email"><label>Username</label><input id="u"><label>Password</label><input id="p" type="password"><label>Confirm password</label><input id="p2" type="password"><label>Preferred language</label><select id="lg"><option value="en">English</option><option value="hi">हिन्दी</option><option value="mr">मराठी</option></select><p id="er" style="color:#ffd2c9;margin:.3rem 0"></p><button class="btn" style="width:100%;background:#5F8F67" onclick="reg()">Create account</button><p><a onclick="auth()">Back to login</a></p>`
+ :`<label>Username or phone</label><input id="u"><div id="otp"></div><button class="btn" style="width:100%;background:#5F8F67" onclick="otp()">Send code</button><p><a onclick="auth()">Back to login</a></p>`}
+ </div></div>`}
+function otp(){if(!$("#u").value)return;$("#otp").innerHTML=`<p style="font-size:.85rem">Prototype mode: any 4-digit code works. A real SMS/OTP service replaces this later.</p><label>Verification code</label><input id="c" maxlength="4" inputmode="numeric"><label>New password</label><input type="password">`;$(".glass .btn").textContent="Reset password";$(".glass .btn").onclick=()=>{auth();$("#er")||0}}
+function login(){const u=$("#u").value.trim();if(!u||!$("#p").value){$("#er").textContent="Enter your username and password.";return}user={name:u,lang:L};enter()}
+function reg(){const g=i=>$("#"+i).value.trim();if(!g("fn")||!g("u")||!g("ph")||!g("p")||!/^\S+@\S+\.\S+$/.test(g("em"))){$("#er").textContent="Please fill every field with a valid email.";return}
+ if($("#p").value!==$("#p2").value){$("#er").textContent="Passwords do not match.";return}L=$("#lg").value;user={name:g("fn"),email:g("em"),lang:L};enter()}
+function enter(){msgs=[{r:"a",t:"Hello. Tell me what's going on, or ask about a medicine, in your own words. I explain and guide; I can't diagnose."}];go("home",false);setTimeout(chk,800)}
+function nav(){const it=[["home","home"],["scan","scan"],["meds","meds"],["herb","herb"],["rx","rx"],["chat","ask"],["docs","docs"]];
+ return `<nav class="top"><div class="logo" onclick="go('home')">${logo} MediRoot</div><div class="links">${it.map(([r,k])=>`<a class="${route==r?'on':''}" onclick="go('${r}')">${t(k)}</a>`).join("")}</div>
+ <button class="sos" onclick="go('sos')">Emergency</button>
+ ${bellHtml()}<div class="lg" role="group" aria-label="Language">${[["en","EN"],["hi","हि"],["mr","म"]].map(a=>`<button class="${L==a[0]?"on":""}" onclick="setL('${a[0]}')">${a[1]}</button>`).join("")}</div><details class="pm"><summary aria-label="Profile">${user.avatar?`<img src="${user.avatar}" alt="" style="width:34px;height:34px;border-radius:50%;object-fit:cover">`:esc(user.name[0]||"U").toUpperCase()}</summary><div><b>My profile</b><label style="display:block;margin-top:.5rem">Username</label><input id="pn" value="${esc(user.name)}" maxlength="30"><button class="btn o" onclick="saveN()">Save name</button><button class="btn o" onclick="$('#pf').click()">Change photo</button><input id="pf" type="file" accept="image/*" hidden onchange="setAv()"><p style="color:var(--mu);font-size:.85rem;margin:.5rem 0 0">${esc(user.email||"")}</p><button class="btn o" onclick="tgl()">${isDark()?"Light mode":"Dark mode"}</button><button class="btn o" onclick="out()">Logout</button></div></details></nav>
+ <div class="bn">${[["home","home"],["scan","scan"],["chat","ask"],["herb","herb"],["docs","docs"]].map(([r,k])=>`<a class="${route==r?'on':''}" onclick="go('${r}')">${t(k)}</a>`).join("")}</div>`}
+function menu(s){const v=s.value;if(v.startsWith("L-")){L=v.slice(2);render()}else if(v=="theme"){const d=document.documentElement;d.dataset.theme=d.dataset.theme=="dark"?"light":"dark";s.selectedIndex=0}else if(v=="out"){stopCam();user=null;stack=[];auth()}}
+const bk=()=>stack.length||route!="home"?`<button class="back" onclick="back()">${t("back")}</button>`:"";
+const find=q=>{q=q.toLowerCase().trim();return M.filter(m=>m.n.toLowerCase().includes(q)||m.ai.toLowerCase().includes(q)||m.id.includes(q.replace(/\s/g,"")))};
+const bg=(a,b)=>`<div class="bgx" style="background:radial-gradient(circle at 80% 20%,${a},transparent 55%),linear-gradient(135deg,${b},#173B2D)"></div>`;
+const slides=[["Understand your medicine.","Scan or search a medicine and understand what it is, what it is commonly used for, and important precautions — in simple language.","#7aa874","#2f5d45"],["Understand nature.","Explore herbs, roots and traditional remedies while clearly separating traditional use from medically established evidence.","#b9c98a","#3d5a34"],["Don't stay confused.","Ask MediRoot, understand your prescription, or connect with a healthcare professional when you need help.","#8fbfae","#1f4a45"]];
+function views(){switch(route){
+case"home":return`${herbRow(1)}
+<h1>${t("help")}</h1><div class="grid">
+${[["scan","Scan Medicine","Scan a package or barcode."],["meds","Search Medicine","Type a name like Paracetamol."],["rx","Understand Prescription","Turn doctor's writing into plain words."],["herb","Herbal Guide","Herbs and roots, traditional use vs evidence."],["chat","Ask MediRoot","Describe your problem normally."],["docs","Find a Doctor","Connect with a professional."]].map(a=>`<button class="act" onclick="go('${a[0]}')">${IC[a[0]]}<b>${a[1]}</b><span>${a[2]}</span></button>`).join("")}</div>${homeMore()}`;
+case"scan":return bk()+`<h1>Scan your medicine</h1><p>Place the medicine package inside the frame and tap Start Camera.</p><div id="camarea"><div class="row"><button class="btn" onclick="cam()">Start Camera</button><button class="btn o" onclick="$('#fi').click()">Upload Medicine Image</button><button class="btn o" onclick="go('meds')">Enter Medicine Name</button></div></div><input id="fi" type="file" accept="image/*" hidden onchange="upl()">`;
+case"meds":return bk()+`<h1>Search medicines</h1><div class="row"><input id="q" placeholder="Search medicine name, brand or active ingredient..." onkeydown="if(event.key=='Enter')sq()"><button class="btn" onclick="sq()" style="align-self:start;margin-top:.25em">Search</button></div><div class="chips">${M.map(m=>`<button onclick="med('${m.id}')">${m.n}</button>`).join("")}</div><div id="res"></div>`;
+case"med":{const m=ctx.med;return bk()+`<h1>${m.n}</h1>${m.gen?`<div class="box warn">This information was generated by AI, not taken from a verified medicine database. Please confirm with a pharmacist or doctor.</div>`:""}<p><span class="tag">${m.ai}</span><span class="tag">${m.f}</span></p>
+<div class="box"><h3>In simple words</h3>${m.s}</div><div class="box"><h3>What is it commonly used for?</h3>${m.u}</div><div class="box"><h3>How does it generally work?</h3>${m.w}</div><div class="box"><h3>Common side effects</h3>${m.se}</div>
+<div class="box warn"><h3>Important precautions</h3>${m.p}</div><div class="box"><h3>Food / lifestyle</h3>${m.fd}</div><div class="box"><h3>Common interactions</h3>${m.i}</div><div class="box warn"><h3>When should I seek medical help?</h3>${m.r}</div>
+${m.a.length?`<div class="box"><h3>Similar medicines</h3><p style="color:var(--mu)">Medicines that appear similar may contain different active ingredients, strengths, or formulations. A pharmacist or doctor should confirm whether an alternative is appropriate for you.</p>${m.a.map(i=>{const a=M.find(x=>x.id==i);const same=a.ai.split(" ")[0]==m.ai.split(" ")[0];return`<p><b>${a.n}</b> — ${a.ai}, ${a.f}. <span class="tag">${same?"Same active ingredient":"Different medicine with a similar purpose"}</span> <a href="#" onclick="med('${a.id}');return false">View</a></p>`}).join("")}</div>`:""}
+<div class="row"><button class="btn" onclick="ask('Tell me more about ${m.n}.')">Ask MediRoot about this medicine</button><button class="btn o" onclick="go('docs')">Find a doctor</button></div><p style="color:var(--mu);font-size:.8rem">Demo dataset for general information only; not a substitute for professional advice.</p>`}
+case"rx":return bk()+`<h1>Understand my prescription</h1><p>Upload an image or PDF of your prescription.</p><div class="row"><button class="btn" onclick="$('#rf').click()">Upload prescription</button><button class="btn o" onclick="sample()">Try a sample prescription</button></div><input id="rf" type="file" accept="image/*,.pdf" hidden onchange="rxup()"><div id="rxo"></div>`;
+case"herb":return bk()+`<h1>Herbal Guide</h1><div class="row"><input id="hq" placeholder="Search a herb, e.g. Tulsi" oninput="hs()"><button class="btn o" style="align-self:start;margin-top:.25em" onclick="$('#hf').click()">Upload image</button></div><input id="hf" type="file" accept="image/*" hidden onchange="herbup()"><div id="ho"></div>`;
+case"docs":return bk()+`<h1>Find a doctor</h1><div id="dl"></div>`;
+case"sos":return bk()+`<h1>Need urgent help?</h1><div class="box warn"><p>If someone has severe breathing trouble, chest pain, is unconscious, bleeding heavily, has stroke signs or a severe allergic reaction, call emergency services now.</p><div class="row"><a class="btn" href="tel:112">Call 112</a><a class="btn o" href="tel:108">Ambulance 108</a></div></div><div class="box"><h3>Nearby hospitals</h3><p id="loc">Share your location to find nearby hospitals, or search manually.</p><div class="row"><button class="btn o" onclick="loc()">Use my location</button><a class="btn o" target="_blank" rel="noopener" href="https://www.google.com/maps/search/hospital+near+me">Search hospitals on maps</a></div></div><div class="box"><h3>Emergency contacts</h3><p style="color:var(--mu)">Add trusted contacts in My Profile (coming with the backend).</p></div><p style="color:var(--mu)">For non-urgent questions, use <a href="#" onclick="go('docs');return false">Find a Doctor</a>.</p>`;
+case"chat":return bk()+`<h1>Ask MediRoot</h1><div class="chat" id="ch"></div><div class="chips" id="cp"></div><div class="row"><input id="ci" placeholder="Tell me what's going on..." onkeydown="if(event.key=='Enter')send()"><button class="btn" style="align-self:start;margin-top:.25em" onclick="send()">Send</button></div>`}}
+function render(){if(!user)return auth();stopCam();closeChat();clearInterval(timer);$("#app").innerHTML=nav()+`<div class="wrap">${views()}</div>`;if(route=="home")carousel();if(route=="chat")drawChat();if(route=="docs")dr();if(route=="herb")hs()}
+function carousel(){const S=()=>{document.querySelectorAll(".sl").forEach((e,i)=>e.classList.toggle("on",i==hi));const p=$("#pg");if(p){p.style.transition="none";p.style.width="0";p.offsetWidth;p.style.transition="width 5s linear";p.style.width="100%"}};S();timer=setInterval(()=>{hi=(hi+1)%3;S()},5000)}
+function sq(){const q=$("#q").value;const r=find(q);$("#res").innerHTML=!q.trim()?"":r.length?r.map(m=>`<button class="act" style="width:100%;margin:.3rem 0" onclick="med('${m.id}')"><b>${m.n}</b><span>${m.ai} — ${m.s}</span></button>`).join(""):`<div class="box">Not in MediRoot's verified list: "${q.replace(/</g,"")}". Check the spelling, try the active ingredient, or ask a pharmacist. <button class="btn o" style="margin-top:.5rem" onclick="go('docs')">Find a doctor</button></div>`}
+function med(id){ctx.med=M.find(m=>m.id==id);go("med")}
+async function cam(){const a=$("#camarea");try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});a.innerHTML=`<div class="cam"><video autoplay playsinline muted></video><div class="frame"><i></i><i></i><i></i><i></i><div class="scan"></div></div></div><p>Place the medicine package inside the frame. Keep the barcode and name visible.</p><div class="row"><button class="btn" onclick="snap()">Capture</button><button class="btn o" onclick="go('scan',false)">Stop</button></div>`;a.querySelector("video").srcObject=stream}catch(e){fail()}}
+function fail(){$("#camarea").innerHTML=`<div class="box warn"><h3>Camera unavailable</h3><p>Your camera could not be accessed. You can still upload a medicine image or enter the medicine name manually.</p><div class="row"><button class="btn" onclick="$('#fi').click()">Upload Image</button><button class="btn o" onclick="go('meds')">Search Medicine</button></div></div>`}
+function snap(){stopCam();unv()}
+function upl(){unv()}
+function unv(){$("#camarea").innerHTML=`<div class="box"><h3>We couldn't verify this as a medicine</h3><p>Barcode/OCR and medicine-recognition services are not connected in this prototype, so MediRoot will not guess. Please scan a medicine package, barcode, or upload a clearer image — or type the name instead. If this is a plant, try the Herbal Guide.</p><div class="row"><button class="btn" onclick="go('meds')">Search Medicine</button><button class="btn o" onclick="go('herb')">Herbal Guide</button></div></div>`}
+function sample(){ctx.rx=1;rxo(true)}
+function rxup(){$("#rxo").innerHTML=`<div class="box warn">Some parts of this prescription are unclear. OCR is not connected in this prototype, so nothing was read. Upload a clearer image, confirm the medicine name with your pharmacist/doctor, or view the sample.</div>`}
+function rxo(){const l=[["pantoprazole","Acidity","1 tablet before breakfast"],["cetirizine","Allergy","1 tablet at night"],["ors","Dehydration","Sip as directed on pack"]];
+$("#rxo").innerHTML=`<p style="color:var(--mu)">Sample prescription for demonstration only.</p><h2>Your prescription</h2>`+l.map((x,i)=>{const m=M.find(a=>a.id==x[0]);return`<div class="box"><b>Medicine ${i+1}: ${m.n}</b><br>Purpose: ${x[1]}<br>Prescribed instruction: ${x[2]}<br><span style="color:var(--mu)">${m.s}</span><br><a href="#" onclick="med('${m.id}');return false">Full details</a></div>`}).join("")+`<button class="btn" onclick="ask('Explain this prescription to me: pantoprazole, cetirizine and ORS.')">Explain this prescription to me</button>`}
+function hs(){const q=($("#hq")||{value:""}).value.toLowerCase();const r=H.filter(h=>h.n.toLowerCase().includes(q)||h.sci.toLowerCase().includes(q));$("#ho").innerHTML=r.length?r.map(h=>`<div class="box"><h3>${h.n}</h3><p><span class="tag"><i>${h.sci}</i></span><span class="tag">${h.part}</span></p><p><b>Traditional use:</b> ${h.tr}</p><p><b>Evidence / medical information:</b> ${h.ev}</p><p style="color:#b5524a"><b>Safety:</b> ${h.sf}</p></div>`).join(""):`<div class="box">No herb found. Try Tulsi, Ginger or Turmeric.</div>`}
+function loc(){navigator.geolocation?navigator.geolocation.getCurrentPosition(p=>{$("#loc").innerHTML=`Location found. <a target="_blank" rel="noopener" href="https://www.google.com/maps/search/hospital/@${p.coords.latitude},${p.coords.longitude},14z">Open nearby hospitals</a>`},()=>{$("#loc").textContent="Location permission denied. Use the maps search button or type your area there."}):$("#loc").textContent="Location is not available on this device."}
+function ask(x){msgs.push({r:"u",t:x});reply(x);go("chat")}
+function drawChat(){$("#ch").innerHTML=msgs.map(m=>`<div class="m ${m.r}">${m.t}</div>`).join("");$("#ch").scrollTop=1e5;const c=(msgs[msgs.length-1]||{}).c||[];$("#cp").innerHTML=c.map(x=>`<button onclick="chip('${x}')">${x}</button>`).join("")}
+function chip(x){if(x=="Search a medicine")return go("meds");if(x=="Find a doctor")return go("docs");$("#ci").value=x;send()}
+function send(){const v=$("#ci").value.trim();if(!v)return;msgs.push({r:"u",t:v.replace(/</g,"&lt;")});reply(v);drawChat();$("#ci").value=""}
+function reply(x){const q=x.toLowerCase();let t="",c=null;
+ if(/chest pain|सीने में दर्द|छातीत दुखणे|बेहोश|बेशुद्ध|सांस नहीं|श्वास घेता येत नाही|can'?t breathe|cannot breathe|breathing difficulty|unconscious|faint|stroke|slurred|bleeding heavily|swelling of (face|throat)|poison|overdose|seizure/.test(q)){t="This could be serious. Please seek emergency care now — call 112 or go to the nearest hospital. Don't wait for it to pass.";c=["Find a doctor"];ctx.stage=null}
+ else if(/marathi|मराठी/.test(q)){t="I can explain in Marathi. Translations of medicine details are coming; for now, share which medicine and I will explain it simply in English, and always confirm terms with your pharmacist."}
+ else{const mm=M.find(m=>q.includes(m.n.toLowerCase())||q.includes(m.id));if(mm){ctx.med=mm;ctx.stage=null;t=L=='en'?`${mm.n}: ${mm.s} Commonly used for: ${mm.u} Key precaution: ${mm.p}`:`${mm.n}: ${tr(mm.s)} ${MORE[L]}`;c=["Search a medicine","Find a doctor"]}
+ else if(/cough|खांसी|खाँसी|खोकला/.test(q)&&!ctx.sym.includes("cough")){ctx.sym.push("cough");ctx.stage="cough1";t="I can help you understand it. Is your cough dry, or are you bringing up mucus?"}
+ else if(ctx.stage=="cough1"){ctx.stage="cough2";t="Thanks. Do you also have fever, breathing difficulty, chest pain, wheezing, or severe weakness?"}
+ else if(ctx.stage=="cough2"){ctx.stage=null;t=/^(no|nope|none|nothing|नहीं|नही|नाही)/.test(q)?"Okay. For a mild cough without warning signs, simple measures such as staying hydrated and avoiding smoke or other irritants may help. If it gets worse, persists, or you develop breathing difficulty or chest pain, please seek medical care.":"Thanks for telling me. Those symptoms are worth getting checked. Please see a doctor soon, and seek emergency care if breathing becomes difficult.";c=["Understand home care","Search a medicine","Find a doctor"]}
+ else if(/fever|temperature|बुखार|बुख़ार|ताप/.test(q)){ctx.sym.push("fever");t="I understand. How long have you had the fever, and do you have a rash, severe headache, stiff neck, or trouble breathing?"}
+ else if(/what medicine|which medicine|should i take|कौन सी दवा|कौनसी दवा|कोणते औषध/.test(q)){t=ctx.sym.length?`Since you mentioned ${ctx.sym.join(" and ")}, a doctor or pharmacist can suggest what suits you. I can explain common options like paracetamol, so you can ask them informed questions. Which would you like?`:"I can't prescribe, but I can explain a medicine if you tell me its name, or ask a few questions about your symptoms first. What are you experiencing?";c=["Paracetamol","Search a medicine","Find a doctor"]}
+ else if(/home care/.test(q)){t="Rest, plenty of fluids, and avoiding smoke or dust are the usual first steps for mild symptoms. If things worsen or last more than a few days, see a doctor."}
+ else if(/should i see|doctor|near me|डॉक्टर/.test(q)){t="Seeing a doctor is sensible if symptoms are severe, last more than a few days, or keep getting worse. I can help you find one.";c=["Find a doctor"]}
+ else if(/after food|before food|side effect|sleepy|drowsy|avoid/.test(q)&&ctx.med){const m=ctx.med;t=`About ${m.n}: food — ${m.fd} Side effects — ${m.se} If it is making you very drowsy or unwell, speak to your doctor or pharmacist.`}
+ else if(/prescription|tablet|used for|why did my doctor/.test(q)){t="Tell me the medicine name printed on the strip, or upload the prescription, and I will explain it step by step.";c=["Search a medicine"]}
+ else{t="I don't have verified information saved about that. Please ask a pharmacist or doctor, or tell me a medicine or herb name, or a symptom."}}
+ msgs.push({r:"a",t,c})}
+
+const X={};`Username | उपयोगकर्ता नाम | वापरकर्ता नाव
+Password | पासवर्ड | पासवर्ड
+Remember me | मुझे याद रखें | मला लक्षात ठेवा
+Forgot password? | पासवर्ड भूल गए? | पासवर्ड विसरलात?
+Login | लॉगिन | लॉगिन
+New to MediRoot? | MediRoot पर नए हैं? | MediRoot वर नवीन आहात?
+Create an account | खाता बनाएँ | खाते तयार करा
+Create account | खाता बनाएँ | खाते तयार करा
+Full name | पूरा नाम | पूर्ण नाव
+Phone number | फ़ोन नंबर | फोन नंबर
+Confirm password | पासवर्ड की पुष्टि करें | पासवर्डची पुष्टी करा
+Preferred language | पसंदीदा भाषा | पसंतीची भाषा
+Back to login | लॉगिन पर वापस | लॉगिनकडे परत
+Emergency | आपातकाल | आणीबाणी
+Toggle dark mode | डार्क मोड बदलें | डार्क मोड बदला
+Logout | लॉग आउट | लॉग आउट
+Scan Medicine | दवा स्कैन करें | औषध स्कॅन करा
+Scan a package or barcode. | पैकेट या बारकोड स्कैन करें। | पॅकेट किंवा बारकोड स्कॅन करा.
+Search Medicine | दवा खोजें | औषध शोधा
+Type a name like Paracetamol. | पैरासिटामोल जैसा नाम लिखें। | पॅरासिटामॉलसारखे नाव टाइप करा.
+Understand Prescription | पर्चा समझें | प्रिस्क्रिप्शन समजून घ्या
+Turn doctor's writing into plain words. | डॉक्टर की लिखावट आसान शब्दों में समझें। | डॉक्टरांचे लिखाण सोप्या शब्दांत समजून घ्या.
+Herbal Guide | जड़ी-बूटी गाइड | वनौषधी मार्गदर्शक
+Herbs and roots, traditional use vs evidence. | जड़ी-बूटियाँ: पारंपरिक उपयोग और प्रमाण। | वनौषधी: पारंपरिक वापर आणि पुरावे.
+Ask MediRoot | MediRoot से पूछें | MediRoot ला विचारा
+Describe your problem normally. | अपनी समस्या सामान्य भाषा में बताएँ। | तुमची समस्या सहज भाषेत सांगा.
+Find a Doctor | डॉक्टर खोजें | डॉक्टर शोधा
+Find a doctor | डॉक्टर खोजें | डॉक्टर शोधा
+Connect with a professional. | किसी विशेषज्ञ से जुड़ें। | तज्ज्ञांशी संपर्क साधा.
+Scan your medicine | अपनी दवा स्कैन करें | तुमचे औषध स्कॅन करा
+Place the medicine package inside the frame and tap Start Camera. | दवा का पैकेट फ्रेम के अंदर रखें और कैमरा शुरू करें दबाएँ। | औषधाचे पॅकेट फ्रेममध्ये ठेवा आणि कॅमेरा सुरू करा दाबा.
+Start Camera | कैमरा शुरू करें | कॅमेरा सुरू करा
+Upload Medicine Image | दवा की फोटो अपलोड करें | औषधाचा फोटो अपलोड करा
+Enter Medicine Name | दवा का नाम लिखें | औषधाचे नाव लिहा
+Camera unavailable | कैमरा उपलब्ध नहीं | कॅमेरा उपलब्ध नाही
+Your camera could not be accessed.~ | कैमरा चालू नहीं हो सका। आप फिर भी दवा की फोटो अपलोड कर सकते हैं या नाम खुद लिख सकते हैं। | कॅमेरा सुरू होऊ शकला नाही. तरीही तुम्ही औषधाचा फोटो अपलोड करू शकता किंवा नाव स्वतः लिहू शकता.
+Upload Image | फोटो अपलोड करें | फोटो अपलोड करा
+Place the medicine package inside the frame. Keep~ | दवा का पैकेट फ्रेम के अंदर रखें। बारकोड और नाम दिखते रहें। | औषधाचे पॅकेट फ्रेममध्ये ठेवा. बारकोड आणि नाव दिसू द्या.
+Capture | फोटो लें | फोटो घ्या
+Stop | रोकें | थांबवा
+We couldn't verify this as a medicine | हम इसे दवा के रूप में सत्यापित नहीं कर सके | हे औषध असल्याचे आम्ही पडताळू शकलो नाही
+Barcode/OCR and medicine-recognition~ | इस प्रोटोटाइप में बारकोड/OCR और दवा पहचान सेवाएँ जुड़ी नहीं हैं, इसलिए MediRoot अंदाज़ा नहीं लगाएगा। कृपया दवा का पैकेट या बारकोड स्कैन करें, साफ़ फोटो अपलोड करें, या नाम लिखें। अगर यह पौधा है तो जड़ी-बूटी गाइड आज़माएँ। | या प्रोटोटाइपमध्ये बारकोड/OCR आणि औषध ओळख सेवा जोडलेल्या नाहीत, त्यामुळे MediRoot अंदाज लावणार नाही. कृपया औषधाचे पॅकेट किंवा बारकोड स्कॅन करा, स्पष्ट फोटो अपलोड करा किंवा नाव लिहा. हे झाड असल्यास वनौषधी मार्गदर्शक वापरा.
+Search medicines | दवाइयाँ खोजें | औषधे शोधा
+Search | खोजें | शोधा
+Search medicine name, brand or active ingredient... | दवा का नाम, ब्रांड या सक्रिय घटक खोजें... | औषधाचे नाव, ब्रँड किंवा सक्रिय घटक शोधा...
+Tell me what's going on... | बताइए क्या हो रहा है... | काय होत आहे ते सांगा...
+Search a herb, e.g. Tulsi | जड़ी-बूटी खोजें, जैसे तुलसी | वनौषधी शोधा, उदा. तुळस
+Enter your city | अपना शहर लिखें | तुमचे शहर लिहा
+In simple words | सरल शब्दों में | सोप्या शब्दांत
+What is it commonly used for? | आमतौर पर किसलिए इस्तेमाल होती है? | सामान्यतः कशासाठी वापरले जाते?
+How does it generally work? | यह आमतौर पर कैसे काम करती है? | हे साधारणपणे कसे कार्य करते?
+Common side effects | आम दुष्प्रभाव | सामान्य दुष्परिणाम
+Important precautions | ज़रूरी सावधानियाँ | महत्त्वाची खबरदारी
+Food / lifestyle | खान-पान / जीवनशैली | आहार / जीवनशैली
+Common interactions | आम दवा-परस्पर प्रभाव | सामान्य औषध परस्परक्रिया
+When should I seek medical help? | मुझे डॉक्टरी मदद कब लेनी चाहिए? | वैद्यकीय मदत कधी घ्यावी?
+Similar medicines | मिलती-जुलती दवाइयाँ | सारखी औषधे
+Same active ingredient | वही सक्रिय घटक | समान सक्रिय घटक
+Different medicine with a similar purpose | अलग दवा, मिलता-जुलता उपयोग | वेगळे औषध, सारखा उद्देश
+Medicines that appear similar~ | जो दवाइयाँ मिलती-जुलती दिखती हैं उनमें अलग सक्रिय घटक, मात्रा या रूप हो सकता है। विकल्प आपके लिए उचित है या नहीं, यह फार्मासिस्ट या डॉक्टर से पक्का करें। | सारखी दिसणाऱ्या औषधांमध्ये वेगळे सक्रिय घटक, मात्रा किंवा स्वरूप असू शकते. पर्याय तुमच्यासाठी योग्य आहे का, हे फार्मासिस्ट किंवा डॉक्टरांकडून निश्चित करा.
+Ask MediRoot about this medicine | इस दवा के बारे में MediRoot से पूछें | या औषधाबद्दल MediRoot ला विचारा
+Demo dataset~ | डेमो डेटा केवल सामान्य जानकारी के लिए है; पेशेवर सलाह का विकल्प नहीं। | डेमो डेटा फक्त सामान्य माहितीसाठी; व्यावसायिक सल्ल्याला पर्याय नाही.
+A common medicine for pain and fever. | दर्द और बुखार की आम दवा। | वेदना आणि तापावरील सामान्य औषध.
+A brand of paracetamol, 650 mg per tablet. | पैरासिटामोल का एक ब्रांड, प्रति गोली 650 mg। | पॅरासिटामॉलचा एक ब्रँड, प्रति गोळी 650 mg.
+An anti-inflammatory pain reliever (an NSAID). | सूजन कम करने वाली दर्द की दवा (NSAID)। | सूज कमी करणारे वेदनाशामक (NSAID).
+An antihistamine for allergy symptoms. | एलर्जी के लक्षणों की एंटीहिस्टामिन दवा। | अ‍ॅलर्जीच्या लक्षणांसाठी अँटीहिस्टामिन औषध.
+An antibiotic. It treats~ | एक एंटीबायोटिक। यह बैक्टीरिया के संक्रमण में काम करती है, ज़्यादातर सर्दी-ज़ुकाम जैसे वायरल रोगों में नहीं। | एक अँटिबायोटिक. हे जिवाणू संसर्गावर काम करते, बहुतेक सर्दीसारख्या विषाणूजन्य आजारांवर नाही.
+A penicillin-type antibiotic. | पेनिसिलिन प्रकार की एंटीबायोटिक। | पेनिसिलिन प्रकारचे अँटिबायोटिक.
+Reduces stomach acid. | पेट में एसिड कम करती है। | पोटातील आम्ल कमी करते.
+Reduces stomach acid, like pantoprazole. | पैंटोप्राज़ोल की तरह पेट का एसिड कम करती है। | पँटोप्राझोलप्रमाणे पोटातील आम्ल कमी करते.
+A medicine that helps control blood sugar~ | टाइप 2 मधुमेह में ब्लड शुगर नियंत्रित करने में मदद करने वाली दवा। | टाइप 2 मधुमेहात रक्तातील साखर नियंत्रणात ठेवण्यास मदत करणारे औषध.
+A salt-and-sugar mix~ | नमक-चीनी का घोल जो दस्त या उल्टी में खोए पानी और लवण की पूर्ति करता है। | जुलाब किंवा उलटीमुळे कमी झालेले पाणी व क्षार भरून काढणारे मीठ-साखरेचे मिश्रण.
+Eases pain and, at low dose~ | दर्द में राहत देती है और कम मात्रा में खून के थक्के रोकने में मदद करती है। | वेदना कमी करते आणि कमी मात्रेत रक्ताच्या गुठळ्या टाळण्यास मदत करते.
+Understand my prescription | मेरा पर्चा समझें | माझे प्रिस्क्रिप्शन समजून घ्या
+Upload an image or PDF of your prescription. | अपने पर्चे की फोटो या PDF अपलोड करें। | तुमच्या प्रिस्क्रिप्शनचा फोटो किंवा PDF अपलोड करा.
+Upload prescription | पर्चा अपलोड करें | प्रिस्क्रिप्शन अपलोड करा
+Try a sample prescription | नमूना पर्चा देखें | नमुना प्रिस्क्रिप्शन पहा
+Your prescription | आपका पर्चा | तुमचे प्रिस्क्रिप्शन
+Explain this prescription to me | यह पर्चा मुझे समझाएँ | हे प्रिस्क्रिप्शन मला समजावून सांगा
+Sample prescription for demonstration~ | केवल प्रदर्शन के लिए नमूना पर्चा। | फक्त प्रात्यक्षिकासाठी नमुना प्रिस्क्रिप्शन.
+Some parts of this prescription are unclear.~ | इस पर्चे के कुछ हिस्से साफ़ नहीं हैं। इस प्रोटोटाइप में OCR जुड़ा नहीं है, इसलिए कुछ पढ़ा नहीं गया। साफ़ फोटो अपलोड करें या दवा का नाम फार्मासिस्ट/डॉक्टर से पक्का करें। | या प्रिस्क्रिप्शनचे काही भाग अस्पष्ट आहेत. या प्रोटोटाइपमध्ये OCR जोडलेले नाही, त्यामुळे काहीही वाचले गेले नाही. स्पष्ट फोटो अपलोड करा किंवा औषधाचे नाव फार्मासिस्ट/डॉक्टरांकडून निश्चित करा.
+Upload image | फोटो अपलोड करें | फोटो अपलोड करा
+Traditional use: | पारंपरिक उपयोग: | पारंपरिक वापर:
+Evidence / medical information: | प्रमाण / चिकित्सा जानकारी: | पुरावे / वैद्यकीय माहिती:
+Safety: | सुरक्षा: | सुरक्षितता:
+All specialties | सभी विशेषज्ञताएँ | सर्व विशेषज्ञता
+Any consultation | कोई भी परामर्श | कोणताही सल्ला
+Demo doctors.~ | डेमो डॉक्टर। स्थान तभी इस्तेमाल होगा जब आप साझा करें; शहर लिखना भी चल जाएगा। | डेमो डॉक्टर. तुम्ही शेअर कराल तेव्हाच स्थान वापरले जाईल; शहर टाइप केले तरी चालेल.
+Demo · verified profile | डेमो · सत्यापित प्रोफ़ाइल | डेमो · पडताळलेले प्रोफाइल
+Consult Online | ऑनलाइन परामर्श लें | ऑनलाइन सल्ला घ्या
+View Profile | प्रोफ़ाइल देखें | प्रोफाइल पहा
+Need urgent help? | तुरंत मदद चाहिए? | तातडीची मदत हवी आहे?
+If someone has severe breathing trouble~ | अगर किसी को सांस लेने में गंभीर तकलीफ़, सीने में दर्द, बेहोशी, भारी रक्तस्राव, स्ट्रोक के लक्षण या गंभीर एलर्जी हो, तो तुरंत आपातकालीन सेवा को कॉल करें। | एखाद्याला श्वास घेण्यास गंभीर त्रास, छातीत दुखणे, बेशुद्धी, जास्त रक्तस्राव, पक्षाघाताची लक्षणे किंवा तीव्र अ‍ॅलर्जी असल्यास त्वरित आपत्कालीन सेवेला कॉल करा.
+Call 112 | 112 पर कॉल करें | 112 ला कॉल करा
+Ambulance 108 | एम्बुलेंस 108 | रुग्णवाहिका 108
+Nearby hospitals | पास के अस्पताल | जवळची रुग्णालये
+Use my location | मेरी लोकेशन इस्तेमाल करें | माझे स्थान वापरा
+Share your location to find nearby hospitals~ | पास के अस्पताल खोजने के लिए लोकेशन साझा करें, या मैन्युअली खोजें। | जवळची रुग्णालये शोधण्यासाठी स्थान शेअर करा किंवा स्वतः शोधा.
+Emergency contacts | आपातकालीन संपर्क | आणीबाणी संपर्क
+Send | भेजें | पाठवा
+Understand home care | घरेलू देखभाल समझें | घरगुती काळजी समजून घ्या
+Search a medicine | दवा खोजें | औषध शोधा
+Hello. Tell me what's going on~ | नमस्ते। बताइए क्या हो रहा है, या अपने शब्दों में किसी दवा के बारे में पूछिए। MediRoot समझाने और सही दिशा दिखाने में मदद करता है, पर निदान नहीं कर सकता। | नमस्कार. काय होत आहे ते सांगा किंवा तुमच्या शब्दांत एखाद्या औषधाबद्दल विचारा. MediRoot समजावून सांगते आणि मार्गदर्शन करते, पण निदान करू शकत नाही.
+I can help you understand it.~ | इसे समझने में मैं मदद करूँगा। क्या आपकी खांसी सूखी है, या बलगम आ रहा है? | हे समजून घेण्यात मी मदत करीन. तुमचा खोकला कोरडा आहे की कफ पडतो?
+Thanks. Do you also have fever~ | धन्यवाद। क्या आपको बुखार, सांस लेने में तकलीफ़, सीने में दर्द, घरघराहट या बहुत कमज़ोरी भी है? | धन्यवाद. तुम्हाला ताप, श्वास घेण्यास त्रास, छातीत दुखणे, घरघर किंवा खूप अशक्तपणा देखील आहे का?
+Okay. For a mild cough~ | ठीक है। चेतावनी-संकेतों के बिना हल्की खांसी में पर्याप्त पानी पीना और धुएँ या परेशान करने वाली चीज़ों से बचना मदद कर सकता है। अगर यह बढ़े, लंबी चले, या सांस लेने में तकलीफ़ या सीने में दर्द हो, तो डॉक्टर को दिखाएँ। | ठीक आहे. धोक्याची लक्षणे नसलेल्या सौम्य खोकल्यात भरपूर पाणी पिणे आणि धूर किंवा त्रास देणाऱ्या गोष्टी टाळणे उपयोगी ठरू शकते. खोकला वाढल्यास, टिकल्यास किंवा श्वास घेण्यास त्रास/छातीत दुखल्यास डॉक्टरांना दाखवा.
+Thanks for telling me.~ | बताने के लिए धन्यवाद। इन लक्षणों की जाँच करवाना ज़रूरी है। जल्दी डॉक्टर को दिखाएँ, और सांस लेना मुश्किल हो तो तुरंत आपातकालीन सेवा लें। | सांगितल्याबद्दल धन्यवाद. या लक्षणांची तपासणी करून घेणे गरजेचे आहे. लवकर डॉक्टरांना दाखवा आणि श्वास घेणे कठीण झाल्यास त्वरित आपत्कालीन सेवा घ्या.
+This could be serious.~ | यह गंभीर हो सकता है। कृपया अभी आपातकालीन मदद लें — 112 पर कॉल करें या नज़दीकी अस्पताल जाएँ। इंतज़ार न करें। | हे गंभीर असू शकते. कृपया आत्ताच आपत्कालीन मदत घ्या — 112 ला कॉल करा किंवा जवळच्या रुग्णालयात जा. थांबू नका.
+I understand. How long have you had the fever~ | समझ गया। बुखार कितने समय से है, और क्या दाने, तेज़ सिरदर्द, गर्दन में अकड़न या सांस की तकलीफ़ भी है? | समजले. ताप किती काळापासून आहे, आणि पुरळ, तीव्र डोकेदुखी, मान ताठ होणे किंवा श्वासाचा त्रास आहे का?
+Rest, plenty of fluids~ | आराम, खूब पानी और धुएँ या धूल से बचाव हल्के लक्षणों के लिए आमतौर पर पहले कदम होते हैं। लक्षण बढ़ें या कुछ दिनों से ज़्यादा रहें तो डॉक्टर को दिखाएँ। | सौम्य लक्षणांसाठी आराम, भरपूर पाणी आणि धूर/धूळ टाळणे हे सहसा पहिले पाऊल असते. लक्षणे वाढल्यास किंवा काही दिवसांपेक्षा जास्त राहिल्यास डॉक्टरांना दाखवा.
+Seeing a doctor is sensible~ | लक्षण गंभीर हों, कुछ दिन से ज़्यादा रहें या बढ़ते जाएँ तो डॉक्टर को दिखाना समझदारी है। मैं डॉक्टर खोजने में मदद कर सकता हूँ। | लक्षणे गंभीर असल्यास, काही दिवसांपेक्षा जास्त राहिल्यास किंवा वाढत गेल्यास डॉक्टरांना दाखवणे योग्य. डॉक्टर शोधण्यात मी मदत करेन.
+Tell me the medicine name printed~ | स्ट्रिप पर छपा दवा का नाम बताइए, या पर्चा अपलोड कीजिए; मैं चरण-दर-चरण समझाऊँगा। | स्ट्रिपवर छापलेले औषधाचे नाव सांगा किंवा प्रिस्क्रिप्शन अपलोड करा; मी टप्प्याटप्प्याने समजावून सांगेन.
+I'm not sure I understood.~ | मैं ठीक से समझ नहीं पाया। कृपया थोड़ा और बताइए — जैसे लक्षण, कितने समय से, या दवा का नाम। | मला नीट समजले नाही. कृपया थोडे अधिक सांगा — उदा. लक्षण, किती काळापासून, किंवा औषधाचे नाव.`.split("\n").forEach(l=>{const a=l.split(" | ");X[a[0]]={hi:a[1],mr:a[2]}});
+`Doctors | डॉक्टर | डॉक्टर
+My consultations | मेरे परामर्श | माझे सल्ले
+I am a doctor | मैं डॉक्टर हूँ | मी डॉक्टर आहे
+My doctor profile | मेरी डॉक्टर प्रोफ़ाइल | माझे डॉक्टर प्रोफाइल
+Patient requests | मरीज़ के अनुरोध | रुग्णांच्या विनंत्या
+Send request | अनुरोध भेजें | विनंती पाठवा
+Open chat | चैट खोलें | चॅट उघडा
+Accept | स्वीकारें | स्वीकारा
+Decline | अस्वीकार करें | नाकारा
+Requested | अनुरोध भेजा गया | विनंती पाठवली
+Accepted | स्वीकृत | स्वीकारले
+Declined | अस्वीकृत | नाकारले
+Save profile | प्रोफ़ाइल सहेजें | प्रोफाइल जतन करा
+Doctor profile | डॉक्टर प्रोफ़ाइल | डॉक्टर प्रोफाइल
+Filter by specialty or city | विशेषज्ञता या शहर से छाँटें | विशेषज्ञता किंवा शहरानुसार निवडा
+Type a message... | संदेश लिखें... | संदेश लिहा...
+What would you like help with? | आपको किस बारे में मदद चाहिए? | तुम्हाला कशाबद्दल मदत हवी आहे?
+Preferred time | पसंदीदा समय | सोयीची वेळ
+Specialty | विशेषज्ञता | विशेषज्ञता
+City | शहर | शहर
+Availability | उपलब्धता | उपलब्धता
+Registration no. provided — not independently verified | पंजीकरण नंबर दिया गया — स्वतंत्र रूप से सत्यापित नहीं | नोंदणी क्रमांक दिला — स्वतंत्रपणे पडताळलेला नाही
+Not for emergencies~ | आपात स्थिति के लिए नहीं। अगर यह तुरंत ज़रूरी है तो आपातकाल बटन इस्तेमाल करें। | आणीबाणीसाठी नाही. तातडीचे असल्यास आणीबाणी बटण वापरा.
+No doctors have registered yet.~ | अभी कोई डॉक्टर पंजीकृत नहीं है। अगर आप डॉक्टर हैं तो "मैं डॉक्टर हूँ" से प्रोफ़ाइल बनाएँ। | अद्याप कोणत्याही डॉक्टरांनी नोंदणी केलेली नाही. तुम्ही डॉक्टर असल्यास "मी डॉक्टर आहे" मधून प्रोफाइल तयार करा.`.split("\n").forEach(l=>{const a=l.split(" | ");X[a[0]]={hi:a[1],mr:a[2]}});
+`Email | ईमेल | ईमेल
+Dark mode | डार्क मोड | डार्क मोड
+Reading the image... | तस्वीर पढ़ी जा रही है... | प्रतिमा वाचत आहे...
+Barcode detected: | बारकोड मिला: | बारकोड सापडला:
+Brand: | ब्रांड: | ब्रँड:
+Active ingredient: | सक्रिय घटक: | सक्रिय घटक:
+Strength: | मात्रा: | मात्रा:
+Form: | रूप: | स्वरूप:
+Manufacturer: | निर्माता: | उत्पादक:
+Confidence: | भरोसा: | विश्वासार्हता:
+Prescribed instruction: | पर्चे में लिखा निर्देश: | प्रिस्क्रिप्शनमधील सूचना:
+Qualifications: | योग्यताएँ: | पात्रता:
+Qualifications | योग्यताएँ | पात्रता
+Languages: | भाषाएँ: | भाषा:
+Languages spoken | बोली जाने वाली भाषाएँ | बोलल्या जाणाऱ्या भाषा
+Demo profile | डेमो प्रोफ़ाइल | डेमो प्रोफाइल
+Try again | फिर कोशिश करें | पुन्हा प्रयत्न करा
+See full details | पूरी जानकारी देखें | संपूर्ण माहिती पहा
+This does not appear to be a medicine. | यह दवा नहीं लगती। | हे औषध असल्याचे दिसत नाही.
+Please scan a medicine package, barcode, or upload a clearer image. | कृपया दवा का पैकेट या बारकोड स्कैन करें, या साफ़ फोटो अपलोड करें। | कृपया औषधाचे पॅकेट किंवा बारकोड स्कॅन करा किंवा स्पष्ट फोटो अपलोड करा.
+This may be a plant rather than a medicine package.~ | यह दवा का पैकेट नहीं, पौधा हो सकता है। जड़ी-बूटी पहचान आज़माएँ। | हे औषधाचे पॅकेट नसून झाड असू शकते. वनौषधी ओळख वापरून पहा.
+Some of the text was unclear.~ | कुछ लिखावट साफ़ नहीं थी। कृपया फार्मासिस्ट से नाम पक्का करें। | काही मजकूर अस्पष्ट होता. कृपया फार्मासिस्टकडून नाव निश्चित करा.
+This medicine is not in MediRoot's verified list yet~ | यह दवा अभी MediRoot की सत्यापित सूची में नहीं है, इसलिए केवल पैकेट पर छपी जानकारी दिखाई गई है। विवरण के लिए फार्मासिस्ट से पूछें। | हे औषध अद्याप MediRoot च्या पडताळलेल्या यादीत नाही, म्हणून फक्त पॅकेटवर छापलेली माहिती दाखवली आहे. तपशीलांसाठी फार्मासिस्टला विचारा.
+We couldn't read this image | हम यह तस्वीर पढ़ नहीं सके | आम्हाला ही प्रतिमा वाचता आली नाही
+Image reading needs a signed-in~ | तस्वीर पढ़ने के लिए साइन-इन किए हुए claude.ai दर्शक की अनुमति चाहिए। आप दवा का नाम लिखकर खोज सकते हैं। | प्रतिमा वाचनासाठी साइन-इन केलेल्या claude.ai दर्शकाची परवानगी लागते. तुम्ही औषधाचे नाव लिहून शोधू शकता.
+Image reading is unavailable | तस्वीर पढ़ना उपलब्ध नहीं | प्रतिमा वाचन उपलब्ध नाही
+Unclear — confirm with your pharmacist. | अस्पष्ट — फार्मासिस्ट से पक्का करें। | अस्पष्ट — फार्मासिस्टकडून निश्चित करा.
+Possible identification~ | संभावित पहचान — उपयोग से पहले किसी विशेषज्ञ से पक्का करें। | संभाव्य ओळख — वापरण्यापूर्वी तज्ज्ञांकडून खात्री करा.
+The image is not clear enough to identify this herb reliably. | तस्वीर इतनी साफ़ नहीं कि इस जड़ी-बूटी की भरोसेमंद पहचान हो सके। | प्रतिमा या वनौषधीची विश्वासार्ह ओळख पटवण्याइतकी स्पष्ट नाही.
+PDF reading is not supported yet.~ | PDF पढ़ना अभी समर्थित नहीं है। कृपया पर्चे की साफ़ फोटो अपलोड करें। | PDF वाचन अद्याप उपलब्ध नाही. कृपया प्रिस्क्रिप्शनचा स्पष्ट फोटो अपलोड करा.
+This is a demo doctor profile.~ | यह डेमो डॉक्टर प्रोफ़ाइल है। कोई असली डॉक्टर जवाब नहीं देगा। लाइव परामर्श जाँचने के लिए डॉक्टर के रूप में पंजीकरण करें। | हे डेमो डॉक्टर प्रोफाइल आहे. कोणताही खरा डॉक्टर उत्तर देणार नाही. थेट सल्ला तपासण्यासाठी डॉक्टर म्हणून नोंदणी करा.`.split("\n").forEach(l=>{const a=l.split(" | ");X[a[0]]={hi:a[1],mr:a[2]}});
+`Look up with MediRoot AI | MediRoot AI से खोजें | MediRoot AI ने शोधा
+This information was generated by AI~ | यह जानकारी AI ने बनाई है, किसी सत्यापित दवा डेटाबेस से नहीं ली गई। कृपया फार्मासिस्ट या डॉक्टर से पक्का करें। | ही माहिती AI ने तयार केली आहे, पडताळलेल्या औषध डेटाबेसमधून घेतलेली नाही. कृपया फार्मासिस्ट किंवा डॉक्टरांकडून खात्री करा.`.split("\n").forEach(l=>{const a=l.split(" | ");X[a[0]]={hi:a[1],mr:a[2]}});
+`I don't have verified information saved~ | मेरे पास इसकी सत्यापित जानकारी सहेजी नहीं है। कृपया फार्मासिस्ट या डॉक्टर से पूछें, या दवा, जड़ी-बूटी या लक्षण बताएँ। | माझ्याकडे याची पडताळलेली माहिती जतन केलेली नाही. कृपया फार्मासिस्ट किंवा डॉक्टरांना विचारा, किंवा औषध, वनौषधी किंवा लक्षण सांगा.
+Demo scan | डेमो स्कैन | डेमो स्कॅन
+Continue with demo account | डेमो खाते से जारी रखें | डेमो खात्याने पुढे जा
+Book appointment | अपॉइंटमेंट बुक करें | अपॉइंटमेंट बुक करा
+My appointments | मेरे अपॉइंटमेंट | माझे अपॉइंटमेंट
+Confirm appointment | अपॉइंटमेंट पक्का करें | अपॉइंटमेंट निश्चित करा
+Date | तारीख | तारीख
+Time | समय | वेळ
+Call now | अभी कॉल करें | आता कॉल करा
+End call | कॉल समाप्त करें | कॉल संपवा
+Mute | म्यूट | म्यूट
+Video | वीडियो | व्हिडिओ
+Cancel | रद्द करें | रद्द करा
+Today | आज | आज
+Upcoming | आगामी | आगामी
+Notifications | सूचनाएँ | सूचना
+Mark all read | सभी पढ़ी हुई करें | सर्व वाचलेले करा
+No notifications yet. | अभी कोई सूचना नहीं। | अद्याप सूचना नाहीत.
+Change photo | फ़ोटो बदलें | फोटो बदला
+Save name | नाम सहेजें | नाव जतन करा
+My profile | मेरी प्रोफ़ाइल | माझे प्रोफाइल
+Light mode | लाइट मोड | लाइट मोड
+How it works | यह कैसे काम करता है | हे कसे कार्य करते
+Popular medicines | लोकप्रिय दवाइयाँ | लोकप्रिय औषधे
+Popular herbs | लोकप्रिय जड़ी-बूटियाँ | लोकप्रिय वनौषधी
+Scan | स्कैन | स्कॅन
+Understand | समझें | समजून घ्या
+Ask | पूछें | विचारा
+Decide | तय करें | ठरवा
+Point your camera at a medicine. | दवा पर कैमरा रखें। | औषधावर कॅमेरा धरा.
+See simple, plain-language information. | सरल भाषा में जानकारी देखें। | सोप्या भाषेत माहिती पहा.
+Chat about your symptoms or medicines. | अपने लक्षणों या दवाओं पर बात करें। | तुमची लक्षणे किंवा औषधांबद्दल गप्पा मारा.
+Book a doctor or get urgent help. | डॉक्टर बुक करें या तुरंत मदद लें। | डॉक्टर बुक करा किंवा तातडीची मदत घ्या.
+MediRoot gives general information~ | MediRoot सामान्य जानकारी देता है और पेशेवर चिकित्सा सलाह का विकल्प नहीं है। आपात स्थिति में 112 पर कॉल करें। | MediRoot सामान्य माहिती देते आणि व्यावसायिक वैद्यकीय सल्ल्याला पर्याय नाही. आणीबाणीत 112 ला कॉल करा.
+Demo result~ | डेमो परिणाम — इस सत्र में लाइव तस्वीर पढ़ना उपलब्ध नहीं है, इसलिए यह नमूना है। | डेमो निकाल — या सत्रात थेट प्रतिमा वाचन उपलब्ध नाही, म्हणून हा नमुना आहे.`.split("\n").forEach(l=>{const a=l.split(" | ");X[a[0]]={hi:a[1],mr:a[2]}});
+const SL={hi:[["अपनी दवा समझें।","दवा स्कैन करें या खोजें और सरल भाषा में समझें कि वह क्या है, आमतौर पर किसलिए इस्तेमाल होती है और कौन-सी सावधानियाँ ज़रूरी हैं।"],["प्रकृति को समझें।","जड़ी-बूटियाँ और जड़ें जानें, जहाँ पारंपरिक उपयोग और चिकित्सकीय रूप से प्रमाणित जानकारी साफ़ अलग दिखाई जाती है।"],["उलझन में न रहें।","MediRoot से पूछें, अपना पर्चा समझें, या ज़रूरत हो तो स्वास्थ्य विशेषज्ञ से जुड़ें।"]],
+mr:[["तुमचे औषध समजून घ्या.","औषध स्कॅन करा किंवा शोधा आणि ते काय आहे, सामान्यतः कशासाठी वापरतात आणि कोणती खबरदारी महत्त्वाची आहे हे सोप्या भाषेत समजून घ्या."],["निसर्ग समजून घ्या.","वनौषधी आणि मुळे जाणून घ्या; पारंपरिक वापर आणि वैद्यकीयदृष्ट्या सिद्ध माहिती स्पष्टपणे वेगळी दाखवली जाते."],["गोंधळात राहू नका.","MediRoot ला विचारा, तुमचे प्रिस्क्रिप्शन समजून घ्या, किंवा गरज असल्यास आरोग्य तज्ज्ञांशी संपर्क साधा."]]};
+const NOTE={hi:"नीचे की विस्तृत चिकित्सा जानकारी अभी अंग्रेज़ी में है। कृपया फार्मासिस्ट या डॉक्टर से पक्का करें।",mr:"खालील तपशीलवार वैद्यकीय माहिती सध्या इंग्रजीत आहे. कृपया फार्मासिस्ट किंवा डॉक्टरांकडून खात्री करा."};
+const MORE={hi:"इसके उपयोग, सावधानियाँ और चेतावनी-संकेत देखने के लिए 'दवाइयाँ' में इसे खोलें।",mr:"याचे उपयोग, खबरदारी आणि धोक्याची लक्षणे पाहण्यासाठी 'औषधे' मध्ये उघडा."};
+function tr(s){if(L=="en")return s;const k=s.trim();let e=X[k];if(!e)for(const p in X)if(p.endsWith("~")&&k.startsWith(p.slice(0,-1))){e=X[p];break}return e&&e[L]?e[L]:s}
+function trDom(){document.documentElement.lang=L;if(L=="en")return;const w=document.createTreeWalker($("#app"),NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode()){const v=n.nodeValue.trim();if(v){const r=tr(v);if(r!=v)n.nodeValue=r}}
+document.querySelectorAll("[placeholder]").forEach(e=>{e.placeholder=tr(e.placeholder)});
+document.querySelectorAll(".sl").forEach((e,i)=>{e.querySelector("h2").textContent=SL[L][i][0];e.querySelector("p").textContent=SL[L][i][1]});
+if((route=="med"||route=="herb")&&!$("#ln")){const d=document.createElement("div");d.id="ln";d.className="box warn";d.textContent=NOTE[L];const t=route=="med"?document.querySelector(".wrap .box"):$("#ho");if(t)t.parentNode.insertBefore(d,t)}}
+const ob=new MutationObserver(()=>{ob.disconnect();trDom();ob.observe(document.body,{childList:true,subtree:true})});ob.observe(document.body,{childList:true,subtree:true});
+
+let db=null,uid=null,dv="list",DOC=[],CON=[],sel=null,open=null,un=null;
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const rows=s=>s.docs.map(d=>Object.assign({id:d.id},d.data()));
+const val=i=>(($("#"+i)||{}).value||"").trim();
+function closeChat(){if(un){un();un=null}}
+function live(){if(route!="docs"||dv=="chat"||dv=="call"||dv=="apt")return;if(dv=="list"&&$("#dlist"))return lst();if(/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||""))return;dr()}
+function dbInit(){if(!window.claude||!claude.use)return;Promise.all([claude.use("db"),claude.use("user")]).then(async([d,u])=>{if(!d)return;db=d;uid=u?await u.id():null;
+ db.collection("doctors").onSnapshot(x=>{DOC=rows(x);live()},()=>{});db.collection("consults").onSnapshot(x=>{CON=rows(x);live()},()=>{});live()}).catch(()=>{})}
+function lst(){const q=val("fq").toLowerCase();const r=ALL().filter(d=>((d.sp||"")+" "+(d.loc||"")).toLowerCase().includes(q));
+ $("#dlist").innerHTML=r.length?r.map(d=>`<div class="box"><b>${esc(d.name)}</b> <span class="tag">${d.demo?"Demo profile":"Registration no. provided — not independently verified"}</span><br>${esc(d.sp)} · ${esc(d.ex)} yrs · ${esc(d.loc)}<br>${esc(d.ty)} · ${esc(d.av)}<div class="row" style="margin-top:.5rem"><button class="btn" onclick="bapt('${esc(d.id)}')">Book appointment</button>${db?`<button class="btn o" onclick="book('${esc(d.id)}')">Consult Online</button>`:""}<button class="btn o" onclick="prof('${esc(d.id)}')">View Profile</button></div></div>`).join(""):`<div class="box">No doctors have registered yet. If you are a doctor, choose "I am a doctor" to create your profile.</div>`}
+const SLB={requested:"Requested",accepted:"Accepted",declined:"Declined"};
+const card=(c,doc)=>`<div class="box"><b>${esc(doc?c.pname:c.dname)}</b> <span class="tag">${SLB[c.status]||""}</span><br>${esc(c.concern)}<br><span style="color:var(--mu)">${esc(c.when)}</span><div class="row" style="margin-top:.5rem">${doc&&c.status=="requested"?`<button class="btn" onclick="setSt('${esc(c.id)}','accepted')">Accept</button><button class="btn o" onclick="setSt('${esc(c.id)}','declined')">Decline</button>`:""}<button class="btn o" onclick="openC('${esc(c.id)}')">Open chat</button></div></div>`;
+function dr(){const el=$("#dl");if(!el)return;closeChat();
+ 
+ const me=DOC.find(d=>d.id==uid),mine=CON.filter(c=>c.pid==uid).sort((a,b)=>b.created-a.created),inb=CON.filter(c=>c.did==uid).sort((a,b)=>b.created-a.created);
+ const tab=(k,l)=>`<button class="${dv==k?"on":""}" onclick="dv='${k}';dr()">${l}</button>`;
+ let h=`<div class="chips">${tab("list","Doctors")}${tab("appts","My appointments")}${db?tab("me","My consultations")+tab("reg",me?"My doctor profile":"I am a doctor")+(me?tab("inbox","Patient requests"):""):""}</div>`;
+ if(dv=="list")h+=`<input id="fq" placeholder="Filter by specialty or city" oninput="lst()"><div id="dlist"></div>`;
+ else if(dv=="book"){const d=ALL().find(x=>x.id==sel);if(!d){dv="list";return dr()}
+  h+=`<div class="box"><h3>${esc(d.name)}</h3>${esc(d.sp)} · ${esc(d.av)}<label>What would you like help with?</label><input id="bc" maxlength="300"><label>Preferred time</label><input id="bw" maxlength="80" placeholder="e.g. today evening"><p style="color:var(--mu);font-size:.85rem">Not for emergencies. If this is urgent, use the Emergency button.</p><button class="btn" onclick="sub()">Send request</button></div>`}
+ else if(dv=="prof"){const d=ALL().find(x=>x.id==sel);if(!d){dv="list";return dr()}h+=`<div class="box"><h3>${esc(d.name)}</h3><span class="tag">${d.demo?"Demo profile":"Registration no. provided — not independently verified"}</span><p>${esc(d.sp)} · ${esc(d.ex)} yrs · ${esc(d.loc)}</p>${d.q?`<p><b>Qualifications:</b> ${esc(d.q)}</p>`:""}${d.lg?`<p><b>Languages:</b> ${esc(d.lg)}</p>`:""}${d.bio?`<p>${esc(d.bio)}</p>`:""}<p>${esc(d.ty)} · ${esc(d.av)}</p><button class="btn" onclick="bapt('${esc(d.id)}')">Book appointment</button>${db?`<button class="btn o" onclick="book('${esc(d.id)}')">Consult Online</button>`:""}</div>`}
+ else if(dv=="apt"){const d=ALL().find(x=>x.id==sel);if(!d){dv="list";return dr()}const t=new Date(),iso=t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");
+  h+=`<div class="box"><h3>${esc(d.name)}</h3>${esc(d.sp)} · ${esc(d.av)}<label>Date</label><input id="ad" type="date" min="${iso}" value="${iso}"><label>Time</label><select id="at">${["09:00","10:00","11:00","12:00","14:00","15:00","16:00","17:00","18:00","19:00"].map(x=>`<option>${x}</option>`).join("")}<option value="test">In 2 minutes (test the reminder)</option></select><label>What would you like help with?</label><input id="ac" maxlength="200"><button class="btn" onclick="subA()">Confirm appointment</button><p style="color:var(--mu);font-size:.85rem">Not for emergencies. Use the Emergency button if urgent.</p></div>`}
+ else if(dv=="appts"){h+=APT.length?APT.slice().sort((a,b)=>a.at-b.at).map(a=>{const d=a.at-Date.now(),o=d<=15*60000&&d>-60*60000;return`<div class="box"><b>${esc(a.dname)}</b> ${a.demo?`<span class="tag">Demo profile</span>`:""}<span class="tag">${new Date(a.at).toDateString()==new Date().toDateString()?"Today":"Upcoming"}</span><br>${esc(a.sp)} · ${esc(fmt(a.at))}${a.c?`<br><span style="color:var(--mu)">${esc(a.c)}</span>`:""}<div class="row" style="margin-top:.5rem;align-items:center">${o?`<button class="btn" onclick="callA(${a.id})">Call now</button>`:`<span style="color:var(--mu);font-size:.85rem">Call opens 15 minutes before</span>`}<button class="btn o" onclick="cancA(${a.id})">Cancel</button></div></div>`}).join(""):`<div class="box">No appointments yet. Pick a doctor and tap Book appointment.</div>`}
+ else if(dv=="call"){const a=APT.find(x=>x.id==callId);if(!a){dv="appts";return dr()}h+=`<div class="callbox"><div class="ring"><i></i><i></i><div class="av">${esc(a.dname.replace("Dr. ","")[0])}</div></div><h2>${esc(a.dname)}</h2><p id="cs" style="color:var(--mu)">Calling…</p><video id="cv" autoplay playsinline muted hidden style="width:150px;border-radius:12px;margin:.5rem"></video><div class="row" style="justify-content:center"><button class="btn o" onclick="tgM()">Mute</button><button class="btn o" onclick="tgV()">Video</button><button class="btn" style="background:#b5524a" onclick="endC()">End call</button></div>${a.demo?`<p style="color:var(--mu);font-size:.85rem">Demo doctor: no real person will answer this call.</p>`:""}</div>`}
+ else if(dv=="me")h+=mine.length?mine.map(c=>card(c,0)).join(""):`<div class="box">You have not requested a consultation yet. Pick a doctor under "Doctors".</div>`;
+ else if(dv=="inbox")h+=inb.length?inb.map(c=>card(c,1)).join(""):`<div class="box">No patient requests yet.</div>`;
+ else if(dv=="reg"){const m=me||{};h+=`<div class="box"><h3>Doctor profile</h3><label>Full name</label><input id="rn" value="${esc(m.name)}"><label>Specialty</label><input id="rs" value="${esc(m.sp)}"><label>Years of experience</label><input id="rx" inputmode="numeric" value="${esc(m.ex)}"><label>Qualifications</label><input id="rq" value="${esc(m.q)}"><label>Languages spoken</label><input id="rg" value="${esc(m.lg)}"><label>City</label><input id="rl" value="${esc(m.loc)}"><label>Consultation type</label><select id="rt"><option>Online</option><option>In-person</option><option>Both</option></select><label>Availability</label><input id="ra" placeholder="e.g. Mon–Fri, 5–8 pm" value="${esc(m.av)}"><label>Medical council registration number</label><input id="rr" value="${esc(m.reg)}"><button class="btn" onclick="saveDoc()">Save profile</button><p style="color:var(--mu);font-size:.85rem">Your profile is visible to patients right away. Registration numbers are not independently verified yet.</p></div>`}
+ else if(dv=="chat"){const c=CON.find(x=>x.id==open);if(!c){dv="me";return dr()}
+  h+=`<div class="box"><b>${esc(uid==c.pid?c.dname:c.pname)}</b> — ${esc(c.concern)}</div><div class="chat" id="cm"></div><div class="row"><input id="cx" maxlength="500" placeholder="Type a message..." onkeydown="if(event.key=='Enter')sendC()"><button class="btn" style="align-self:start;margin-top:.25em" onclick="sendC()">Send</button></div><p style="color:var(--mu);font-size:.85rem">Not for emergencies. Chat messages are visible to people with access to this page.</p>${String(c.did).startsWith("demo-")?`<div class="box warn">This is a demo doctor profile. No real doctor will reply. Register as a doctor to test a live consultation.</div>`:""}`}
+ el.innerHTML=h;if(dv=="list")lst();if(dv=="call")callRun();
+ if(dv=="chat")un=db.collection("consults/"+open+"/messages").onSnapshot(x=>{const e=$("#cm");if(!e)return;e.innerHTML=rows(x).sort((a,b)=>a.t-b.t).map(m=>`<div class="m ${m.u==uid?"u":"a"}">${esc(m.x)}</div>`).join("");e.scrollTop=1e5},()=>{})}
+function book(id){sel=id;dv="book";dr()}
+function openC(id){open=id;dv="chat";dr()}
+function sub(){const d=ALL().find(x=>x.id==sel),c=val("bc");if(!d||!c){alert("Please describe what you need help with.");return}
+ db.collection("consults").add({did:d.id,dname:d.name,pid:uid,pname:user.name,concern:c,when:val("bw")||"Any time",status:"requested",created:Date.now()}).then(()=>{dv="me";dr()}).catch(()=>alert("Could not send the request. Check your access and try again."))}
+function setSt(id,st){db.doc("consults/"+id).update({status:st}).catch(()=>alert("Could not update this request."))}
+function sendC(){const x=val("cx");if(!x)return;$("#cx").value="";db.collection("consults/"+open+"/messages").add({u:uid,x,t:Date.now()}).catch(()=>alert("Message not sent."))}
+function saveDoc(){const o={name:val("rn"),sp:val("rs"),ex:val("rx"),loc:val("rl"),ty:val("rt"),av:val("ra"),reg:val("rr"),q:val("rq"),lg:val("rg"),uid};if(!o.name||!o.sp||!o.loc||!o.reg){alert("Name, specialty, city and registration number are required.");return}
+ db.doc("doctors/"+uid).set(o).then(()=>{dv="list";dr()}).catch(()=>alert("Could not save your profile."))}
+
+const DEMO=[{id:"demo-1",name:"Dr. Meera Deshmukh",sp:"General Physician",ex:"12",loc:"Kolhapur",ty:"Online",av:"Mon–Sat, 5–8 pm",q:"MBBS, MD (Medicine)",lg:"English, Hindi, Marathi",bio:"Family medicine: fever, infections, diabetes and blood pressure follow-up.",demo:1},
+{id:"demo-2",name:"Dr. Arjun Patil",sp:"Pulmonologist",ex:"9",loc:"Pune",ty:"Both",av:"Tue–Sun, 10 am–1 pm",q:"MBBS, DNB (Respiratory Medicine)",lg:"English, Marathi",bio:"Cough, asthma and breathing problems.",demo:1},
+{id:"demo-3",name:"Dr. Sneha Kulkarni",sp:"Dermatologist",ex:"7",loc:"Mumbai",ty:"Online",av:"Daily, 4–7 pm",q:"MBBS, MD (Dermatology)",lg:"English, Hindi",bio:"Skin allergies, acne, hair and nail concerns.",demo:1},
+{id:"demo-4",name:"Dr. Imran Shaikh",sp:"Paediatrician",ex:"15",loc:"Kolhapur",ty:"In-person",av:"Mon–Fri, 9 am–12 pm",q:"MBBS, DCH",lg:"English, Hindi, Marathi",bio:"Child health, vaccination and common childhood infections.",demo:1}];
+const ALL=()=>DOC.concat(DEMO);
+function prof(id){sel=id;dv="prof";dr()}
+function setL(c){L=c;if(user)user.lang=c;render()}
+function tgl(){const d=document.documentElement;d.dataset.theme=d.dataset.theme=="dark"?"light":"dark"}
+function out(){stopCam();user=null;stack=[];auth()}
+const pills=()=>[8,22,40,58,74,90].map((l,i)=>`<i class="pill" style="left:${l}%;animation-delay:-${i*3}s;animation-duration:${16+i*2}s"></i>`).join("");
+const deco=()=>herbRow(0)+`<i class="orb" style="width:340px;height:340px;background:#5F8F67;left:-80px;top:-60px"></i><i class="orb" style="width:300px;height:300px;background:#a9cfa4;right:-60px;bottom:-40px;animation-delay:-5s"></i><svg class="vine" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;opacity:.4" fill="none" stroke="#cfe6c9" stroke-width="2.5" stroke-linecap="round"><path d="M-10 620C80 460 40 320 160 200S300 60 330 -10"/><path d="M810 640C720 480 780 340 660 230S520 80 500 -10" style="animation-delay:1s"/><path d="M160 200c40-30 80-20 100 10M660 230c-40-30-80-20-100 10M100 380c-40-10-70 10-80 40M720 400c40-10 70 10 80 40" style="animation-delay:2.5s"/></svg>`+leaves()+pills();
+let lastCode=null,bt=null;
+function stopCam(){clearInterval(bt);if(stream){stream.getTracks().forEach(x=>x.stop());stream=null}}
+const SAMP=async()=>{try{const s=await claude.use("sample");if(!s)return null;const l=await s.limits();return l&&l.images?s:null}catch(e){return null}};
+const sPane=h=>{$("#camarea").innerHTML=h};
+const wait=`<div class="box"><span class="spin"></span> <span>Reading the image...</span></div>`;
+const nos=`<div class="box warn"><h3>Image reading is unavailable</h3><p>Image reading needs a signed-in claude.ai viewer who allows it. You can still search by medicine name.</p><div class="row"><button class="btn" onclick="go('meds')">Search Medicine</button></div></div>`;
+const mt=x=>{const q=(x||"").toLowerCase();if(!q)return null;return M.find(m=>{const n=m.n.toLowerCase(),w=n.split(" ")[0];return q.includes(n)||q.includes(m.id)||(w.length>3&&q.includes(w))})};
+async function cam(){const a=$("#camarea");try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}})}catch(e){return fail()}
+ a.innerHTML=`<div class="cam"><video autoplay playsinline muted></video><div class="frame"><i></i><i></i><i></i><i></i><div class="scan"></div></div></div><p id="bc2" style="color:var(--mu)">Place the medicine package inside the frame. Keep the barcode and name visible.</p><div class="row"><button class="btn" onclick="snap()">Capture</button><button class="btn o" onclick="go('scan',false)">Stop</button></div>`;
+ const v=a.querySelector("video");v.srcObject=stream;lastCode=null;
+ if("BarcodeDetector" in window){const bd=new BarcodeDetector();bt=setInterval(async()=>{try{const r=await bd.detect(v);if(r.length&&r[0].rawValue!=lastCode){lastCode=r[0].rawValue;const e=$("#bc2");if(e)e.innerHTML=`<span>Barcode detected:</span> <b>${esc(lastCode)}</b>`}}catch(e){}},700)}}
+function snap(){const v=document.querySelector(".cam video");if(!v||!v.videoWidth)return;const c=document.createElement("canvas"),k=Math.min(1,1280/v.videoWidth);c.width=v.videoWidth*k;c.height=v.videoHeight*k;c.getContext("2d").drawImage(v,0,0,c.width,c.height);const code=lastCode;stopCam();c.toBlob(b=>analyze(b,code),"image/jpeg",.85)}
+function upl(){const f=$("#fi").files[0];if(f)analyze(f,null)}
+async function analyze(b,code){sPane(wait);const sm=await SAMP();if(!sm)return demoScan(b,code);
+ try{showScan(await sm.json(`You read photos of medicine packaging for a pharmacy-information app. Answer ONLY with JSON: {"category":"medicine"|"plant"|"prescription"|"other"|"unclear","brand":"","generic":"","strength":"","form":"","manufacturer":"","confidence":0.0}. Rules: copy only text that is clearly visible on the package; use "" for anything not visible or unreadable; never guess a medicine from shape or colour; use category "other" for any non-medicine object; confidence is 0-1 for how reliably brand/generic were read.${code?` A barcode scanner read: ${code}.`:""}`,{images:b}),code)}
+ catch(e){sPane(`<div class="box warn"><h3>We couldn't read this image</h3><div class="row"><button class="btn" onclick="go('scan',false)">Try again</button><button class="btn o" onclick="go('meds')">Search Medicine</button></div></div>`)}}
+function showScan(r,code){r=r||{};const bar=code?`<p><span>Barcode detected:</span> <b>${esc(code)}</b></p>`:"",c=r.confidence||0;
+ if(r.category=="plant")return sPane(`<div class="box"><h3>This does not appear to be a medicine.</h3><p>This may be a plant rather than a medicine package. Try Herbal Recognition.</p><div class="row"><button class="btn" onclick="go('herb')">Herbal Guide</button></div></div>`);
+ if(r.category!="medicine"||c<.4)return sPane(`<div class="box warn"><h3>This does not appear to be a medicine.</h3><p>Please scan a medicine package, barcode, or upload a clearer image.</p>${bar}<div class="row"><button class="btn" onclick="go('scan',false)">Try again</button><button class="btn o" onclick="go('meds')">Search Medicine</button></div></div>`);
+ const m=mt(r.brand)||mt(r.generic),row=(k,v)=>v?`<p><b>${k}</b> ${esc(v)}</p>`:"";
+ sPane(`<div class="box"><h3>${esc(m?m.n:(r.brand||r.generic||"Medicine"))}</h3>${bar}${row("Brand:",r.brand)}${row("Active ingredient:",r.generic)}${row("Strength:",r.strength)}${row("Form:",r.form)}${row("Manufacturer:",r.manufacturer)}<p><b>Confidence:</b> ${Math.round(c*100)}%</p>${c<.7?`<div class="box warn">Some of the text was unclear. Please confirm the name with your pharmacist.</div>`:""}${m?`<p>${m.s}</p><div class="row"><button class="btn" onclick="med('${m.id}')">See full details</button><button class="btn o" onclick="ask('Tell me about ${m.n}.')">Ask MediRoot about this medicine</button></div>`:`<div class="box">This medicine is not in MediRoot's verified list yet, so only what is printed on the package is shown. Ask your pharmacist for details.</div><div class="row"><button class="btn o" onclick="go('meds')">Search Medicine</button></div>`}</div>`)}
+async function rxup(){const f=$("#rf").files[0],o=$("#rxo");if(!f)return;
+ if(!f.type.startsWith("image/"))return o.innerHTML=`<div class="box warn">PDF reading is not supported yet. Please upload a clear photo of the prescription.</div>`;
+ o.innerHTML=wait;const sm=await SAMP();if(!sm){rxo();o.insertAdjacentHTML("afterbegin",`<div class="box warn">Demo result: live image reading is not available in this session, so this is a sample.</div>`);return}
+ try{const r=await sm.json(`You read photos of handwritten or printed prescriptions for a patient-information app. Answer ONLY with JSON: {"readable":true|false,"items":[{"medicine":"","strength":"","instruction":"","confidence":0.0}]}. Rules: copy only what is actually written; use "" for any part you cannot read; never complete, correct or invent medicine names, doses or instructions; set readable false if most of it is illegible; confidence is 0-1 per item.`,{images:f});
+  const it=(r.items||[]).filter(x=>x&&x.medicine);if(!r.readable||!it.length)return o.innerHTML=`<div class="box warn">Some parts of this prescription are unclear. Please upload a clearer image or confirm the medicine name with your pharmacist/doctor.</div>`;
+  o.innerHTML=`<h2>Your prescription</h2>`+it.map((x,i)=>{const m=mt(x.medicine);return`<div class="box"><b>${i+1}. ${esc(x.medicine)}</b>${x.strength?` ${esc(x.strength)}`:""}<br><b>Prescribed instruction:</b> ${esc(x.instruction||"—")}${m?`<br><span style="color:var(--mu)">${m.s}</span><br><a href="#" onclick="med('${m.id}');return false">See full details</a>`:""}${(x.confidence||0)<.6||!x.instruction?`<div class="box warn">Unclear — confirm with your pharmacist.</div>`:""}</div>`}).join("")+`<button class="btn" onclick="ask('Explain this prescription to me: ${esc(it.map(x=>x.medicine).join(", ")).replace(/'/g,"")}')">Explain this prescription to me</button>`}
+ catch(e){o.innerHTML=`<div class="box warn">We couldn't read this image</div>`}}
+async function herbup(){const f=$("#hf").files[0],o=$("#ho");if(!f)return;o.innerHTML=wait;const sm=await SAMP();if(!sm){$("#hq").value="Tulsi";hs();o.insertAdjacentHTML("afterbegin",`<div class="box warn">Demo result: live image reading is not available in this session, so this is a sample herb.</div>`);return}
+ try{const r=await sm.json(`Identify the plant, herb or root in this photo. Answer ONLY with JSON: {"identified":true|false,"common_name":"","scientific_name":"","confidence":0.0}. If it is not clearly a plant or you are unsure, set identified false. Never guess.`,{images:f});
+  const h=r.identified&&(r.confidence||0)>=.6?H.find(x=>(r.common_name||"").toLowerCase().includes(x.n.toLowerCase())||(r.scientific_name||"").toLowerCase().includes(x.sci.toLowerCase())):null;
+  if(h){o.innerHTML=`<div class="box warn">Possible identification — please confirm with an expert before use.</div><div class="box"><h3>${h.n}</h3><p><span class="tag"><i>${h.sci}</i></span><span class="tag">${h.part}</span></p><p><b>Traditional use:</b> ${h.tr}</p><p><b>Evidence / medical information:</b> ${h.ev}</p><p style="color:#b5524a"><b>Safety:</b> ${h.sf}</p></div>`}
+  else if(r.identified&&(r.confidence||0)>=.6)o.innerHTML=`<div class="box"><h3>${esc(r.common_name)}</h3><i>${esc(r.scientific_name)}</i><p>This plant is not in the Herbal Guide yet. Ask a qualified practitioner before using it.</p></div>`;
+  else o.innerHTML=`<div class="box warn">The image is not clear enough to identify this herb reliably.</div>`}
+ catch(e){o.innerHTML=`<div class="box warn">We couldn't read this image</div>`}}
+dbInit();
+
+const LN={en:"English",hi:"Hindi (Devanagari script)",mr:"Marathi (Devanagari script)"};
+const EM=/chest pain|सीने में दर्द|छातीत दुखणे|बेहोश|बेशुद्ध|सांस नहीं|श्वास घेता येत नाही|can'?t breathe|cannot breathe|breathing difficulty|unconscious|faint|stroke|slurred|bleeding heavily|swelling of (face|throat)|poison|overdose|seizure/i;
+const SYS=()=>`You are MediRoot, a calm, practical medicine and herbal information assistant for ordinary people in India. STRICT RULE: answer ONLY from the SAVED KNOWLEDGE below and the conversation. Never use outside knowledge. If the person asks about any medicine, herb, brand, product, dose, price, interaction or fact that is not in SAVED KNOWLEDGE, do not answer it: say in one or two sentences that you do not have verified information saved about that, and suggest asking a pharmacist or doctor (offer to find a doctor). Never guess or fill gaps. Never diagnose, prescribe or give personal doses. For symptoms, ask ONE short question at a time, use the SYMPTOM GUIDE, and for red flags tell them to call 112 or go to hospital now. Explain in simple words, no emojis, no markdown, under 120 words. Reply in ${LN[L]}, keeping medicine and herb names in their usual form. Only if useful, end with one final line exactly like: NEXT: Search a medicine | Find a doctor | Understand home care (pick one to three of those exact options).${ctx.med?` The person was just viewing ${ctx.med.n}.`:""}\n\nSAVED KNOWLEDGE\n${KB()}`;
+const OPT=["Search a medicine","Find a doctor","Understand home care"];
+let cbusy=0;
+function drawChat(){const e=$("#ch");if(!e||route!="chat")return;e.innerHTML=msgs.map(m=>`<div class="m ${m.r}">${m.t}</div>`).join("");e.scrollTop=1e5;const c=(msgs[msgs.length-1]||{}).c||[];$("#cp").innerHTML=c.map(x=>`<button onclick="chip('${x}')">${x}</button>`).join("")}
+function send(){const v=$("#ci").value.trim();if(!v||cbusy)return;$("#ci").value="";msgs.push({r:"u",t:esc(v),raw:v});if(EM.test(v)){reply(v);drawChat();return}drawChat();chatAI(v)}
+function ask(x){msgs.push({r:"u",t:esc(x),raw:x});go("chat");if(EM.test(x)){reply(x);drawChat()}else chatAI(x)}
+const html=t=>esc(t).replace(/\n/g,"<br>");
+async function chatAI(x){cbusy=1;let sm=null;try{sm=await claude.use("sample")}catch(e){}
+ if(!sm){cbusy=0;reply(x);drawChat();return}
+ msgs.push({r:"a",t:"…"});const mi=msgs.length-1;drawChat();
+ const hist=msgs.slice(0,mi).filter(m=>m.raw||m.t).map(m=>({role:m.r=="u"?"user":"assistant",content:m.raw||m.t.replace(/<[^>]*>/g," ")}));while(hist.length&&hist[0].role!="user")hist.shift();
+ try{const r=await sm([{role:"user",content:SYS()}].concat(hist.slice(-14)),{modelTier:"quick",cache:false,onText:o=>{msgs[mi]={r:"a",t:html(o.text.split(/\nNEXT:/)[0]),raw:o.text.split(/\nNEXT:/)[0]};drawChat()}});
+  const parts=r.text.split(/\nNEXT:/),c=(parts[1]||"").split("|").map(z=>z.trim()).filter(z=>OPT.includes(z));msgs[mi]={r:"a",t:html(parts[0]),raw:parts[0],c:c.length?c:null}}
+ catch(e){msgs.splice(mi,1);if(e&&e.code=="not_granted"){reply(x);msgs[msgs.length-1].t+="<br><small>(AI replies are off because permission was declined, so this is basic guidance.)</small>"}else msgs.push({r:"a",t:e&&e.code=="rate_limited"?"Too many requests right now. Please wait a moment and try again.":"MediRoot AI is unavailable right now. If this is urgent, use the Emergency button or see a doctor."})}
+ cbusy=0;drawChat()}
+async function aiMed(q){const o=$("#res");o.innerHTML=wait;let sm=null;try{sm=await claude.use("sample")}catch(e){}
+ if(!sm)return o.innerHTML=`<div class="box warn">AI lookup is unavailable here. Check the spelling or ask a pharmacist.</div>`;
+ try{const r=await sm.json(`A person searched a medicine app for "${q.replace(/"/g,"")}". If this is a real, clearly recognisable medicine (generic name or common Indian brand), answer ONLY with JSON: {"found":true,"name":"","active":"","forms":"","simple":"","uses":"","works":"","side":"","precautions":"","food":"","interactions":"","redflags":""} in simple everyday English, 1-2 sentences per field, with no doses. If you do not clearly recognise it, or it could mean several different products, answer {"found":false}. Never guess.`,{modelTier:"default"});
+  if(!r.found||!r.name)return o.innerHTML=`<div class="box warn">We could not clearly identify "${esc(q)}". Check the spelling, search the active ingredient, or ask a pharmacist.</div>`;
+  const c=z=>String(z||"").replace(/['"<>]/g,"");ctx.med={n:c(r.name),ai:c(r.active),f:c(r.forms),s:c(r.simple),u:c(r.uses),w:c(r.works),se:c(r.side),p:c(r.precautions),fd:c(r.food),i:c(r.interactions),r:c(r.redflags),a:[],gen:1};go("med")}
+ catch(e){o.innerHTML=`<div class="box warn">AI lookup failed. Please try again.</div>`}}
+
+document.body.insertAdjacentHTML("afterbegin",'<svg width="0" height="0" style="position:absolute"><defs><symbol id="lf" viewBox="0 0 40 28"><path d="M0 14C10 0 28 0 40 14 28 28 10 28 0 14z" fill="currentColor"/><path d="M2 14H38" stroke="rgba(255,255,255,.45)" fill="none"/></symbol></defs></svg>');
+const HC={en:[["Understand your medicine.","Scan or search. Get simple answers."],["Understand nature.","Herbs and roots: traditional use vs evidence."],["Don't stay confused.","Ask, understand, then see a doctor if needed."]],
+hi:[["अपनी दवा समझें।","स्कैन या खोजें। आसान जवाब पाएँ।"],["प्रकृति को समझें।","जड़ी-बूटियाँ: पारंपरिक उपयोग बनाम प्रमाण।"],["उलझन में न रहें।","पूछें, समझें, ज़रूरत हो तो डॉक्टर से मिलें।"]],
+mr:[["तुमचे औषध समजून घ्या.","स्कॅन करा किंवा शोधा. सोपी उत्तरे मिळवा."],["निसर्ग समजून घ्या.","वनौषधी: पारंपरिक वापर विरुद्ध पुरावे."],["गोंधळात राहू नका.","विचारा, समजून घ्या, गरज असल्यास डॉक्टरांना भेटा."]]};
+const lf=(x,y,a,z,c,d)=>`<g transform="translate(${x} ${y}) rotate(${a})"><g class="sw" style="animation-delay:-${d}s;color:${c}"><use href="#lf" width="${z}" height="${z*.7}" y="${-z*.35}"/></g></g>`;
+const ART=[
+`<svg viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice"><g class="kb"><path d="M100 300C96 240 106 170 100 80" stroke="#bfe0b8" stroke-width="3" fill="none"/>${[[100,240,-35,64,"#8fc088",0],[100,240,215,64,"#6fae77",1],[101,190,-30,56,"#a5d19c",2],[101,190,210,56,"#7fb986",3],[100,140,-40,48,"#8fc088",1.5],[100,140,220,48,"#a5d19c",2.5],[100,90,-80,40,"#6fae77",.5]].map(a=>lf(...a)).join("")}<g class="fl"><rect x="30" y="60" width="44" height="18" rx="9" fill="#e6f0e3" opacity=".85" transform="rotate(-25 52 69)"/><rect x="30" y="60" width="22" height="18" rx="9" fill="#9bc79a" transform="rotate(-25 52 69)"/></g></g></svg>`,
+`<svg viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice"><g class="kb"><g stroke-linecap="round" fill="none"><path d="M25 255C65 232 90 275 130 250" stroke="#d9b36c" stroke-width="18"/><path d="M110 250C140 222 152 258 182 236" stroke="#e0a43c" stroke-width="15"/><path d="M62 248C60 218 92 216 90 188" stroke="#d9b36c" stroke-width="13"/></g><g stroke="#f2dfae" stroke-width="1.8" fill="none" stroke-linecap="round"><path class="gr" d="M40 262q-8 16-18 22"/><path class="gr" style="animation-delay:-1s" d="M80 266q2 18-6 28"/><path class="gr" style="animation-delay:-2s" d="M140 262q6 16 2 30"/><path class="gr" style="animation-delay:-.5s" d="M170 246q10 12 8 26"/></g>${[[90,188,-75,52,"#8fc088",0],[90,188,-105,46,"#6fae77",1],[182,236,-70,48,"#a5d19c",2],[182,236,-110,42,"#7fb986",3],[28,254,-120,40,"#8fc088",1.5]].map(a=>lf(...a)).join("")}<circle class="pu" cx="150" cy="120" r="7" fill="#f6d77a"/><circle class="pu" style="animation-delay:-1s" cx="55" cy="95" r="5" fill="#f6d77a"/></g></svg>`,
+`<svg viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice"><g class="kb">${[-42,-21,0,21,42].map((a,i)=>`<g class="sg" style="transform-origin:100px 290px;animation-delay:-${i}s"><path transform="rotate(${a} 100 290)" d="M100 290C70 240 80 160 100 110C120 160 130 240 100 290z" fill="${i%2?"#6fae77":"#8fc088"}"/></g>`).join("")}<path d="M30 300C34 250 24 200 40 150" stroke="#bfe0b8" stroke-width="3" fill="none"/>${[[34,260,-30,34,"#a5d19c",0],[34,260,210,34,"#8fc088",1],[30,215,-35,30,"#a5d19c",2],[30,215,215,30,"#8fc088",3],[38,170,-60,28,"#a5d19c",1]].map(a=>lf(...a)).join("")}<circle class="pu" cx="165" cy="90" r="6" fill="#f4c9d8"/><circle class="pu" style="animation-delay:-1.1s" cx="150" cy="130" r="4" fill="#f4c9d8"/></g></svg>`];
+function herbRow(big){const c=HC[L]||HC.en;return `<div class="hrow ${big?"hero":"bgrow"}">${[0,1,2].map(i=>`<div class="hc g${i}" data-i="${i}" data-p="${i}" style="transform:translateX(${i*100}%)"><div class="art">${ART[i]}</div>${big?`<div class="ht"><h2>${c[i][0]}</h2><p>${c[i][1]}</p></div>`:""}</div>`).join("")}${big?`<i class="hp" style="left:12%;animation-delay:-1s"></i><i class="hp" style="left:38%;animation-delay:-4s"></i><i class="hp" style="left:61%;animation-delay:-7s"></i><i class="hp" style="left:84%;animation-delay:-2.5s"></i><div class="prog" id="pg"></div>`:""}</div>`}
+function rot(r){r.querySelectorAll(".hc").forEach(c=>{const p=+c.dataset.p,n=(p+2)%3;c.dataset.p=n;if(p==0){c.classList.add("nt");c.style.transform="translateX(300%)";c.offsetWidth;c.classList.remove("nt")}c.style.transform=`translateX(${n*100}%)`;c.classList.toggle("mid",n==1)})}
+function startRow(){clearInterval(timer);const rs=[...document.querySelectorAll(".hrow")];if(!rs.length)return;
+ const pg=()=>{const e=$("#pg");if(e){e.style.transition="none";e.style.width="0";e.offsetWidth;e.style.transition="width 5s linear";e.style.width="100%"}};
+ rs.forEach(r=>r.querySelectorAll(".hc").forEach(c=>c.classList.toggle("mid",c.dataset.i==1)));pg();timer=setInterval(()=>{rs.forEach(rot);pg()},5000)}
+function carousel(){startRow()}
+const _auth=auth;auth=function(m){_auth(m);startRow()};
+const sv=(b,x)=>`<svg class="ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${b}</svg>`;
+const IC={scan:sv('<path d="M4 10V4h6M22 4h6v6M28 22v6h-6M10 28H4v-6"/><path class="scl" d="M8 16h16" stroke="#5F8F67"/>'),
+meds:sv('<g class="pu"><circle cx="14" cy="14" r="8"/><path d="M20 20l8 8"/></g>'),
+rx:sv('<path d="M8 4h12l6 6v18H8z"/><path class="scl" d="M12 16h10M12 22h8" stroke="#5F8F67"/>'),
+herb:sv('<path d="M16 29V14"/><g class="swy"><path d="M16 18C6 16 4 8 5 5c8 0 11 5 11 13zM16 14c0-8 5-11 11-11 1 7-3 12-11 11z"/></g>'),
+chat:sv('<path d="M5 6h22v15H14l-6 5v-5H5z"/><g stroke="#5F8F67" stroke-width="3"><path class="dt" d="M11 13.5h.01"/><path class="dt" style="animation-delay:.2s" d="M16 13.5h.01"/><path class="dt" style="animation-delay:.4s" d="M21 13.5h.01"/></g>'),
+docs:sv('<g class="pu"><path d="M16 5v22M5 16h22" stroke-width="4"/></g>')};
+
+const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}},svk=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+let APT=ld("mr_apt",[]),NT=ld("mr_nt",[]),callId=null,callT=null,cs=null;
+const tm=t=>new Date(t).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}),fmt=t=>new Date(t).toLocaleString([],{weekday:"short",day:"numeric",month:"short",hour:"numeric",minute:"2-digit"});
+try{const t=localStorage.getItem("mr_th");if(t)document.documentElement.dataset.theme=t}catch(e){}
+const isDark=()=>{const d=document.documentElement.dataset.theme;return d?d=="dark":matchMedia("(prefers-color-scheme: dark)").matches};
+function tgl(){const n=isDark()?"light":"dark";document.documentElement.dataset.theme=n;try{localStorage.setItem("mr_th",n)}catch(e){}render()}
+function demo(){user={name:"Demo User",email:"demo@mediroot.app",demo:1,lang:L};enter()}
+function saveN(){const v=val("pn");if(v){user.name=v;render()}}
+function setAv(){const f=$("#pf").files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement("canvas");c.width=c.height=96;const k=Math.min(im.width,im.height);c.getContext("2d").drawImage(im,(im.width-k)/2,(im.height-k)/2,k,k,0,0,96,96);user.avatar=c.toDataURL("image/jpeg",.85);render()};im.src=r.result};r.readAsDataURL(f)}
+function bellHtml(){const u=NT.filter(n=>!n.read).length;return `<details class="pm" id="bell"><summary aria-label="Notifications" class="${u?"rg":""}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0112 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 004 0"/></svg>${u?`<b class="bdg">${u}</b>`:""}</summary><div style="width:300px;max-width:80vw;max-height:60vh;overflow:auto"><b>Notifications</b>${NT.length?NT.slice().reverse().slice(0,8).map(n=>`<p style="margin:.5rem 0;${n.read?"opacity:.6":""}"><b>${esc(n.t)}</b><br><span style="font-size:.85rem">${esc(n.x)}</span>${n.aid?`<br><a href="#" onclick="callA(${n.aid});return false">Call now</a>`:""}</p>`).join("")+`<button class="btn o" onclick="readAll()">Mark all read</button>`:`<p style="color:var(--mu)">No notifications yet.</p>`}</div></details>`}
+const upBell=()=>{const e=$("#bell");if(e){e.outerHTML=bellHtml();trDom()}};
+function readAll(){NT.forEach(n=>n.read=1);svk("mr_nt",NT);upBell()}
+function toast(t,x,aid){const d=document.createElement("div");d.className="toast";d.innerHTML=`<b>${esc(t)}</b><br><span>${esc(x)}</span>${aid?`<br><button class="btn" style="margin-top:.4rem;padding:.3em .8em" onclick="callA(${aid});this.parentNode.remove()">Call now</button>`:""}`;document.body.appendChild(d);setTimeout(()=>d.remove(),9000)}
+function notify(t,x,aid){NT.push({t,x,aid,read:0,at:Date.now()});svk("mr_nt",NT);upBell();toast(t,x,aid);try{const c=new(window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator();o.connect(c.destination);o.frequency.value=880;o.start();setTimeout(()=>{o.stop();c.close()},250)}catch(e){}try{if(Notification.permission=="granted")new Notification(t,{body:x})}catch(e){}}
+function chk(){if(!user)return;const now=Date.now();let ch=0;APT.forEach(a=>{const d=a.at-now,f=a.f=a.f||{};
+ if(new Date(a.at).toDateString()==new Date().toDateString()&&!f.t&&d>15*60000){f.t=1;ch=1;notify("You have an appointment today",`${a.dname} at ${tm(a.at)}`,a.id)}
+ if(d<=15*60000&&d>0&&!f.a){f.a=1;ch=1;notify("Appointment soon",`${a.dname} in ${Math.max(1,Math.round(d/60000))} min (${tm(a.at)}). Get ready for your call.`,a.id)}
+ if(d<=0&&d>-30*60000&&!f.b){f.b=1;ch=1;notify("It's time for your appointment",`${a.dname} · ${tm(a.at)}. Tap to start your call.`,a.id)}});if(ch)svk("mr_apt",APT)}
+setInterval(chk,15000);
+function bapt(id){sel=id;dv="apt";dr()}
+function subA(){const d=ALL().find(x=>x.id==sel),t=val("at"),c=val("ac");if(!d)return;let at;if(t=="test")at=Date.now()+120000;else{at=new Date(val("ad")+"T"+t).getTime();if(!(at>Date.now())){alert("Please choose a time in the future.");return}}
+ APT.push({id:Date.now(),did:d.id,dname:d.name,sp:d.sp,at,c,demo:!!d.demo,f:{}});svk("mr_apt",APT);try{if("Notification" in window&&Notification.permission=="default")Notification.requestPermission()}catch(e){}
+ const td=new Date(at).toDateString()==new Date().toDateString();notify("Appointment booked",`${d.name} · ${fmt(at)}${td?" · today. You will get a reminder 15 minutes before.":""}`,0);chk();dv="appts";dr()}
+function cancA(id){APT=APT.filter(a=>a.id!=id);svk("mr_apt",APT);dr()}
+function callA(id){callId=id;dv="call";go("docs")}
+function closeChat(){if(un){un();un=null}clearInterval(callT);if(cs){cs.getTracks().forEach(t=>t.stop());cs=null}}
+function callRun(){let s=-3;clearInterval(callT);callT=setInterval(()=>{s++;const e=$("#cs");if(!e)return;e.textContent=s<0?"Calling…":"Connected · "+String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")},1000)}
+async function tgV(){const v=$("#cv");if(cs){cs.getTracks().forEach(t=>t.stop());cs=null;v.hidden=true;return}try{cs=await navigator.mediaDevices.getUserMedia({video:true,audio:true});v.srcObject=cs;v.hidden=false}catch(e){alert("Camera or microphone could not be accessed.")}}
+function tgM(){if(cs)cs.getAudioTracks().forEach(t=>t.enabled=!t.enabled)}
+function endC(){closeChat();dv="appts";dr()}
+const homeMore=()=>`<h2 class="sec">How it works</h2><div class="steps">${[["Scan","Point your camera at a medicine."],["Understand","See simple, plain-language information."],["Ask","Chat about your symptoms or medicines."],["Decide","Book a doctor or get urgent help."]].map((a,i)=>`<div class="stp"><span style="animation-delay:${i*.4}s">${i+1}</span><b>${a[0]}</b><p>${a[1]}</p></div>`).join("")}</div><h2 class="sec">Popular medicines</h2><div class="chips">${M.slice(0,8).map(m=>`<button onclick="med('${m.id}')">${m.n}</button>`).join("")}</div><h2 class="sec">Popular herbs</h2><div class="chips">${H.map(h=>`<button onclick="go('herb')">${h.n}</button>`).join("")}</div><footer class="ft">MediRoot gives general information and is not a substitute for professional medical advice. In an emergency, call 112.</footer>`;
+function demoScan(b,code){const go2=u=>sPane(`<div class="box warn"><h3>Demo scan</h3><p>Demo result: live image reading is not available in this session, so this is a sample. Choose the medicine you scanned to see its details.</p></div>${u?`<img src="${u}" alt="Your scan" style="max-width:100%;max-height:200px;border-radius:12px">`:""}${code?`<p><span>Barcode detected:</span> <b>${esc(code)}</b></p>`:""}<div class="chips">${M.map(m=>`<button onclick="med('${m.id}')">${m.n}</button>`).join("")}</div>`);
+ if(!b)return go2("");const r=new FileReader();r.onload=()=>go2(r.result);r.onerror=()=>go2("");r.readAsDataURL(b)}
+document.body.insertAdjacentHTML("beforeend",'<div id="splash"><div style="text-align:center"><div class="sp2"></div><p style="font-family:Fraunces,serif;font-size:1.4rem;margin-top:1rem">MediRoot</p></div></div>');setTimeout(()=>{const e=$("#splash");e.style.opacity=0;setTimeout(()=>e.remove(),700)},1400);
+
+M.push(
+{id:"diclofenac",n:"Diclofenac",ai:"Diclofenac",f:"Tablet 50 mg, gel, injection",s:"An NSAID that relieves pain and inflammation.",u:"Joint, muscle and back pain, swelling and period pain.",w:"Blocks chemicals that cause pain and swelling.",se:"Stomach upset, heartburn, dizziness; less commonly stomach bleeding or kidney strain.",p:"Take after food. Avoid with stomach ulcers, kidney or heart disease unless a doctor advises, and in late pregnancy. Use the lowest dose for the shortest time.",fd:"Take with food or milk.",i:"Aspirin, other NSAIDs, blood thinners, some blood pressure medicines.",r:"Black stools, vomiting blood, chest pain, breathlessness, swelling, severe stomach pain.",a:["ibuprofen"]},
+{id:"levocetirizine",n:"Levocetirizine",ai:"Levocetirizine",f:"Tablet 5 mg",s:"An antihistamine for allergies, similar to cetirizine.",u:"Sneezing, runny nose, itchy eyes and hives.",w:"Blocks histamine, which the body releases in allergic reactions.",se:"Sleepiness, dry mouth, tiredness.",p:"May cause drowsiness, so take care when driving. The dose may need changing in kidney problems.",fd:"With or without food. Avoid alcohol.",i:"Alcohol and other sedating medicines.",r:"Swelling of lips or throat, difficulty breathing, severe rash.",a:["cetirizine"]},
+{id:"montelukast",n:"Montelukast",ai:"Montelukast",f:"Tablet 10 mg, chewable tablet",s:"A daily medicine that helps prevent asthma and allergy symptoms.",u:"Long-term asthma control and allergic rhinitis, as prescribed. Not for sudden attacks.",w:"Blocks substances that tighten the airways and cause swelling.",se:"Headache, stomach upset; mood or sleep changes can occur.",p:"It is not a rescue medicine. Tell your doctor about mood changes, agitation or sleep problems.",fd:"Usually taken in the evening, with or without food.",i:"Tell your doctor about all other medicines you take.",r:"Mood changes, thoughts of self-harm, severe breathing trouble, rash.",a:[]},
+{id:"atorvastatin",n:"Atorvastatin",ai:"Atorvastatin calcium",f:"Tablet 10/20/40 mg",s:"A cholesterol-lowering medicine (a statin).",u:"Lowering cholesterol and reducing heart attack and stroke risk, as prescribed.",w:"Reduces the cholesterol made by the liver.",se:"Muscle aches, mild stomach upset, headache.",p:"Not for pregnancy. Do not stop on your own. Your doctor may check liver tests.",fd:"Can be taken at any time of day. Avoid large amounts of grapefruit juice.",i:"Some antibiotics and antifungals, fibrates, large amounts of grapefruit juice.",r:"Severe unexplained muscle pain or weakness, dark urine, yellow skin or eyes.",a:[]},
+{id:"amlodipine",n:"Amlodipine",ai:"Amlodipine besylate",f:"Tablet 2.5/5 mg",s:"A blood pressure medicine that relaxes blood vessels.",u:"High blood pressure and some types of chest pain (angina), as prescribed.",w:"Relaxes blood vessels so blood flows more easily.",se:"Ankle swelling, flushing, headache, tiredness.",p:"Do not stop suddenly. Get up slowly if you feel dizzy. Have your blood pressure checked regularly.",fd:"With or without food.",i:"Some other blood pressure medicines, high-dose simvastatin, some antifungals.",r:"Worsening chest pain, fainting, severe swelling, very slow or very fast heartbeat.",a:[]},
+{id:"domperidone",n:"Domperidone",ai:"Domperidone",f:"Tablet 10 mg",s:"Eases nausea, vomiting and bloating.",u:"Nausea, vomiting and fullness after meals, as advised.",w:"Helps the stomach and gut move food along.",se:"Dry mouth, headache, diarrhoea.",p:"Use for a short time only unless advised. Tell your doctor about heart rhythm problems.",fd:"Usually taken before meals.",i:"Some antibiotics, antifungals and heart-rhythm medicines.",r:"Fainting, palpitations, vomiting that will not stop, signs of dehydration.",a:[]},
+{id:"ironfolic",n:"Iron and folic acid",ai:"Ferrous (iron) salt with folic acid",f:"Tablet",s:"A supplement that helps prevent and treat low iron and folate.",u:"Iron-deficiency anaemia and during pregnancy, as advised.",w:"Supplies the iron and folate the body needs to make red blood cells.",se:"Constipation, dark stools, stomach upset, nausea.",p:"Keep away from children: iron overdose is dangerous. Take only as advised.",fd:"Absorbs best on an empty stomach, but take with food if it upsets you. Avoid tea or milk at the same time.",i:"Antacids, calcium and some antibiotics; ask about timing.",r:"Severe stomach pain, vomiting blood, black tarry stools with weakness, or a child who swallowed tablets.",a:[]},
+{id:"vitamind3",n:"Vitamin D3",ai:"Cholecalciferol",f:"Capsule, sachet, drops",s:"A vitamin that helps the body absorb calcium for bones.",u:"Vitamin D deficiency and bone health, as advised.",w:"Helps the gut absorb calcium and phosphate.",se:"Usually none at normal doses; too much can cause high calcium.",p:"Take only the advised dose. High doses over a long time can be harmful, and a blood test helps guide treatment.",fd:"Absorbs better with a meal that contains some fat.",i:"High-dose calcium, some diuretics.",r:"Nausea, vomiting, great thirst, confusion or kidney stone symptoms.",a:[]},
+{id:"salbutamol",n:"Salbutamol",ai:"Salbutamol (albuterol)",f:"Inhaler, tablet, syrup",s:"A quick-relief medicine that opens the airways.",u:"Wheezing, breathlessness and asthma attacks, as prescribed.",w:"Relaxes the muscles around the airways.",se:"Shaky hands, fast heartbeat, headache.",p:"Ask a pharmacist to show you the correct inhaler technique. Needing it more and more often means asthma is not well controlled, so see a doctor.",fd:"Not affected by food.",i:"Beta blockers can reduce its effect.",r:"Severe breathlessness not relieved by the inhaler, blue lips, trouble speaking, chest pain.",a:[]});
+M.find(x=>x.id=="cetirizine").a=["levocetirizine"];
+H.push(
+{n:"Giloy",sci:"Tinospora cordifolia",part:"Stem",tr:"Used in Ayurveda for fever, weakness and general immunity.",ev:"Limited human evidence; some studies suggest effects on immunity and blood sugar.",sf:"Liver injury has been reported. May lower blood sugar and stimulate the immune system. Avoid in autoimmune disease, before surgery and in pregnancy unless a doctor agrees."},
+{n:"Amla",sci:"Phyllanthus emblica",part:"Fruit",tr:"Used as a tonic and for digestion; rich in vitamin C.",ev:"A good source of vitamin C; evidence for other claimed benefits is limited.",sf:"Generally safe as food. May lower blood sugar and affect clotting, so take care with diabetes medicines or blood thinners."},
+{n:"Brahmi",sci:"Bacopa monnieri",part:"Leaves, whole plant",tr:"Traditionally used for memory and calmness.",ev:"Some small trials show a modest memory benefit after weeks of use; the evidence is limited.",sf:"Can cause stomach upset and drowsiness. May interact with thyroid, sedative and some psychiatric medicines. Avoid in pregnancy."},
+{n:"Shatavari",sci:"Asparagus racemosus",part:"Root",tr:"Used for women's health, digestion and as a general tonic.",ev:"There is little good human evidence.",sf:"Avoid in pregnancy and breastfeeding unless advised. May act as a mild diuretic; allergy is possible. Ask a doctor if you have a hormone-sensitive condition."},
+{n:"Triphala",sci:"Blend of Phyllanthus emblica, Terminalia chebula and Terminalia bellirica",part:"Dried fruits",tr:"Used for digestion and as a gentle laxative.",ev:"Some small studies on constipation and oral health; evidence is limited.",sf:"May cause loose stools or cramps. Avoid in pregnancy. Ask a doctor if you take blood thinners or diabetes medicines."},
+{n:"Mulethi (Licorice)",sci:"Glycyrrhiza glabra",part:"Root",tr:"Used for sore throat and cough.",ev:"Some support for soothing the throat, but long-term use has proven risks.",sf:"Regular or large amounts can raise blood pressure and lower potassium. Avoid in high blood pressure, heart or kidney disease and in pregnancy."},
+{n:"Cinnamon",sci:"Cinnamomum verum / Cinnamomum cassia",part:"Bark",tr:"Used for digestion and as a flavouring.",ev:"Small effects on blood sugar in some studies; results are mixed.",sf:"Cassia cinnamon contains coumarin, which can harm the liver in large amounts. Cooking amounts are generally safe."},
+{n:"Clove",sci:"Syzygium aromaticum",part:"Flower bud",tr:"Used for toothache and cough.",ev:"Clove oil has numbing and antiseptic effects, but evidence for most uses is limited.",sf:"Clove oil is toxic if swallowed beyond tiny amounts and can irritate gums. Keep away from children. May affect clotting."},
+{n:"Black pepper",sci:"Piper nigrum",part:"Fruit",tr:"Used for digestion and colds.",ev:"Piperine can increase the absorption of some medicines and supplements.",sf:"May change how the body handles some medicines. Large amounts can irritate the stomach."},
+{n:"Fenugreek",sci:"Trigonella foenum-graecum",part:"Seeds",tr:"Used for digestion, breast-milk supply and blood sugar.",ev:"Some evidence for a modest blood sugar-lowering effect.",sf:"May lower blood sugar and cause gas or loose stools. Avoid large amounts in pregnancy. May interact with blood thinners; allergy is possible."});
+const SYM=`SYMPTOM GUIDE: Cough: ask if dry or with mucus; fluids, avoid smoke and dust; see a doctor if over 2 weeks, blood in sputum, breathlessness, chest pain or high fever. Fever: rest and fluids; paracetamol is covered above; see a doctor if over 3 days, rash, stiff neck, confusion, breathing trouble, or in infants and the elderly. Headache: rest, fluids, regular meals; urgent care for sudden severe headache, weakness, speech or vision change, or after a head injury. Acidity or heartburn: smaller meals, do not lie down right after eating, limit spicy and oily food; see a doctor for black stools, vomiting blood, trouble swallowing or weight loss. Diarrhoea or vomiting: sip ORS often; urgent care if unable to drink, blood in stool, very sleepy, or no urine for many hours, especially in children and elders. Cold or allergy: fluids, rest, avoid triggers; see a doctor for wheezing, swelling of face or lips, or symptoms over 10 days. Sore throat: warm fluids; see a doctor if it is hard to swallow, fever is high, or it lasts over a week. GENERAL: store medicines cool, dry and away from children; do not use expired medicines; for a missed dose follow the label or ask a pharmacist and never double up; finish an antibiotic course only as prescribed; do not share medicines; tell your doctor about all medicines and herbs you take because herbs can interact with medicines; ask a doctor in pregnancy, breastfeeding, childhood and chronic illness. In severe or worsening symptoms, see a doctor.`;
+const KB=()=>"MEDICINES:\n"+M.map(m=>`- ${m.n} (${m.ai}; ${m.f}). What: ${m.s} Uses: ${m.u} How it works: ${m.w} Side effects: ${m.se} Precautions: ${m.p} Food: ${m.fd} Interactions: ${m.i} Seek help if: ${m.r}`).join("\n")+"\nHERBS:\n"+H.map(h=>`- ${h.n} (${h.sci}; ${h.part}). Traditional use: ${h.tr} Evidence: ${h.ev} Safety: ${h.sf}`).join("\n")+"\n"+SYM;
+const _reply=reply;reply=function(x){const q=x.toLowerCase(),h=H.find(z=>q.includes(z.n.toLowerCase().split(" ")[0]));if(h&&!EM.test(x)){msgs.push({r:"a",t:esc(`${h.n} (${h.sci}). Traditional use: ${h.tr} Evidence: ${h.ev} Safety: ${h.sf}`),c:["Find a doctor"]});return}_reply(x)};
+$("#app").innerHTML="";auth();
+</script></body></html>
